@@ -14,7 +14,7 @@ const SalesHome = lazy(() => import("./Sales_ALL/SalesHome"));
 
 const PrivateRoutes = () => {
   const { account } = useContext(DataContext);
-  return account ? <Outlet /> : <Navigate to="/login" />;
+  return account.name ? <Outlet /> : <Navigate to="/login" />;
 };
 
 const App = () => {
