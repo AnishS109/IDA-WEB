@@ -74,10 +74,10 @@ export const deleteEnquiryDetails = async (req, res) => {
     const deletedEnquiry = await addEnquirySchema.deleteOne({ salesName, fullName });
 
     if (deletedEnquiry.deletedCount === 0) {
-      return res.status(404).json({ msg: "Enquiry not found or already deleted." });
+      return res.status(404).json({ message: "Enquiry not found or already deleted." });
     }
 
-    return res.status(200).json({ msg: "Enquiry deleted successfully." });
+    return res.status(200).json({ message: "Enquiry deleted successfully." });
   } catch (error) {
     console.error("INTERNAL SERVER ERROR", error);
     return res.status(500).json({ message: "Internal Server Error" });

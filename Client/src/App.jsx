@@ -1,45 +1,23 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState, useContext } from "react";
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
-import DataProvider from "./Context/DataProvider";
+import DataProvider, { DataContext } from "./Context/DataProvider";
 import Loader from "./components/Loader";
 
+// Lazy-loaded components
 const Home = lazy(() => import("./Pages/Home"));
 const Login = lazy(() => import("./Pages/Login"));
 const Register = lazy(() => import("./Pages/Register"));
-
 const AdminHome = lazy(() => import("./admin_ALL/AdminHome"));
 const FacultyHome = lazy(() => import("./faculty_ALL/FacultyHome"));
 const HrHome = lazy(() => import("./HR_ALL/HrHome"));
 const SalesHome = lazy(() => import("./Sales_ALL/SalesHome"));
-const AddEnquiry = lazy(() => import("./Sales_ALL/components/AddEnquiry"));
 
-// const PrivateRoutes = ({ authStatus }) => {
-//   console.log(authStatus);
-  
-//   if (authStatus) {
-//     return <Outlet />;
-//   }
-//   return <Navigate to="/" />;
-// };
+const PrivateRoutes = () => {
+  const { account } = useContext(DataContext);
+  return account ? <Outlet /> : <Navigate to="/login" />;
+};
 
 const App = () => {
-  // const [authStatus, setAuthStatus] = useState(false);
-  // const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   const accessToken = sessionStorage.getItem("accessToken");
-  //   if (accessToken) {
-  //     console.log("DONE")
-  //     setAuthStatus(true);
-  //   } else {
-  //     setAuthStatus(false);
-  //   }
-  //   setLoading(false); 
-  // }, [authStatus]);
-
-  // if (loading) {
-  //   return <Loader />;
-  // }
 
   return (
     <DataProvider>
@@ -50,6 +28,10 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            {/* ------------ PRIVATE ROUTES ------------ */}
+
+            <Route element={<PrivateRoutes />}>
 
               {/* ------------ FOR ADMIN ------------ */}
               <Route path="/Admin-Home" element={<AdminHome />} />
@@ -62,6 +44,9 @@ const App = () => {
 
               {/* ------------ FOR HR ------------ */}
               <Route path="/HR-Home" element={<HrHome />} />
+
+            </Route>
+
           </Routes>
         </Suspense>
       </BrowserRouter>

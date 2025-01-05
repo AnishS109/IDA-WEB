@@ -28,10 +28,10 @@ const Navbar = () => {
 
   // Confirm the logout and clear session
   const handleConfirmLogout = () => {
-    sessionStorage.clear();
+    localStorage.clear()
     setAccount({ userName: "", name: "" });
     setOpen(false);
-    navigate("/");  // Navigate to home page after logout
+    navigate("/"); 
   };
 
   // Cancel logout

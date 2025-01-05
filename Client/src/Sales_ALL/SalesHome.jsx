@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Grid, Button } from "@mui/material";
 import AddEnquiry from "./components/AddEnquiry";
 import Layout from "../Layout/Layout";
-import AllEnquiry from "./components/AllEnquiry";
+import FollowUps from "./components/FollowUps";
 import Calling from "./components/Calling";
 import Confirmed from "./components/Confirmed";
 
@@ -10,6 +10,8 @@ import AddIcon from "@mui/icons-material/Add";
 import LoopIcon from "@mui/icons-material/Loop";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import SchoolIcon from '@mui/icons-material/School';
+import EnrolledStudent from "./components/EnrolledStudent";
 
 const SalesHome = () => {
 
@@ -20,6 +22,7 @@ const SalesHome = () => {
     { label: "Follow-Ups", icon: <LoopIcon />, key: "Follow-Ups" },
     { label: "Calling", icon: <PhoneInTalkIcon />, key: "Calling" },
     { label: "Confirmed", icon: <CheckCircleOutlineIcon />, key: "Confirmed" },
+    { label: "Enrolled Student", icon: <SchoolIcon />, key: "Enrolled Student" }
   ];
 
   useEffect(() => {
@@ -31,13 +34,16 @@ const SalesHome = () => {
       return <AddEnquiry />;
     } 
     else if (selectedOption === "Follow-Ups") {
-      return <AllEnquiry />;
+      return <FollowUps />;
     } 
     else if (selectedOption === "Calling") {
       return <Calling />;
     } 
     else if (selectedOption === "Confirmed") {
       return <Confirmed />;
+    }
+    else if (selectedOption === "Enrolled Student") {
+      return <EnrolledStudent />;
     }
   };
 

@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography, CircularProgress } from "@mui/material";
 import { useContext, useReducer, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -9,33 +9,41 @@ const Login = () => {
   const savedRole = localStorage.getItem("role");
 
   const reducer = (state, action) => {
-    if (action.type === "SET_FORM") {
-      return {
-        ...state,
-        loginDetails: {
-          ...state.loginDetails,
-          [action.field]: action.value,
-        },
-      };
-    }
-    if (action.type === "RESET_FORM") {
-      return {
-        ...state,
-        loginDetails: { username: "", password: "", role: "" },
-        error: "",
-      };
-    }
-    if (action.type === "SET_ERROR") {
-      return {
-        ...state,
-        error: action.payload,
-      };
+    switch (action.type) {
+      case "SET_FORM":
+        return {
+          ...state,
+          loginDetails: {
+            ...state.loginDetails,
+            [action.field]: action.value,
+          },
+        };
+      case "RESET_FORM":
+        return {
+          ...state,
+          loginDetails: { userName: "", password: "", role: "" },
+          error: "",
+        };
+      case "SET_ERROR":
+        return {
+          ...state,
+          error: action.payload,
+          loading: false,
+        };
+      case "SET_LOADING":
+        return {
+          ...state,
+          loading: action.payload,
+        };
+      default:
+        return state;
     }
   };
 
   const initialState = {
     error: "",
     successMsg: "",
+    loading: false, // Added loading state
     loginDetails: {
       userName: "",
       password: "",
@@ -55,25 +63,27 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!state.loginDetails.userName || !state.loginDetails.password) {
       dispatchState({ type: "SET_ERROR", payload: "All fields are required!" });
       return;
     }
-  
+
+    dispatchState({ type: "SET_LOADING", payload: true }); // Start loading
+
     try {
       const response = await axios.post(
         `${backendUrl}/userLogin`,
         state.loginDetails
       );
       const Data = response.data;
-  
+
       if (response.status === 200) {
-        sessionStorage.setItem(`accessToken`, `${Data.accessToken}`);
-        sessionStorage.setItem(`refreshToken`, `${Data.refreshToken}`);
-  
-        setAccount({ name: Data.name, userName: Data.userName });
-  
+
+        const accountData = { name: Data.name, userName: Data.userName };
+        setAccount(accountData);
+        sessionStorage.setItem("account", JSON.stringify(accountData));        
+
         if (Data.role === "Admin") {
           setTimeout(() => {
             navigate("/Admin-Home");
@@ -104,17 +114,17 @@ const Login = () => {
           type: "SET_ERROR",
           payload: error.response.data.message || "Something went wrong!",
         });
-      }
-       else {
+      } else {
         console.error("Error during setup:", error.message);
         dispatchState({
           type: "SET_ERROR",
           payload: "Error during request. Please try again.",
         });
       }
+    } finally {
+      dispatchState({ type: "SET_LOADING", payload: false }); // Stop loading
     }
   };
-  
 
   const Logo =
     "https://instadotanalytics.com/wp-content/uploads/2023/05/WhatsApp_Image_2024-07-11_at_15.57.22_70256fed-removebg-preview.png";
@@ -174,6 +184,13 @@ const Login = () => {
             >
               {state.error}
             </Typography>
+          )}
+
+          {/* --------- LOADER --------- */}
+          {state.loading && (
+            <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+              <CircularProgress color="primary" />
+            </Box>
           )}
 
           {/* --------- LOGIN FORM --------- */}
@@ -243,6 +260,7 @@ const Login = () => {
               textTransform: "none",
               borderRadius: "25px",
             }}
+            disabled={state.loading} // Disable button during loading
           >
             Login
           </Button>

@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken"
 import TokenSchema from "../models/tokenSchema.js"
 
 export const userLogin = async(req, res) => {
-  console.log(req.body);
   
   const {userName, password, role} = req.body
   const Access_Token = process.env.ACCESS_TOKEN

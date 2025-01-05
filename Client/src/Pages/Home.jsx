@@ -10,8 +10,6 @@ import { DataContext } from "../Context/DataProvider";
 
 const Home = () => {
 
-  const {setRole} = useContext(DataContext)
-
   return (
     <Layout>
       <Box
@@ -98,7 +96,6 @@ const Home = () => {
                     cursor: "pointer",
                   },
                 }}
-                onClick={() => setRole("Admin")}
               >
                 Admin
               </Typography>
@@ -142,7 +139,6 @@ const Home = () => {
                     cursor: "pointer",
                   },
                 }}
-                onClick={() => setRole("HR")}
               >
                 HR
               </Typography>
@@ -186,7 +182,6 @@ const Home = () => {
                     cursor: "pointer",
                   },
                 }}
-                onClick={() => setRole("Faculty")}
               >
                 Faculty
               </Typography>
@@ -230,7 +225,6 @@ const Home = () => {
                     cursor: "pointer",
                   },
                 }}
-                onClick={() => setRole("Sales")}
               >
                 Sales
               </Typography>
