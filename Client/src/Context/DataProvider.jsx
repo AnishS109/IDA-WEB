@@ -7,7 +7,7 @@ export const DataContext = createContext({
 
 const DataProvider = ({ children }) => {
 
-  const backendUrl = "http://localhost:5000"
+  const backendUrl = "https://ida-web-server.onrender.com"
   
   const [role, setRole] = useState(() => {
     const savedRole = sessionStorage.getItem("role");
