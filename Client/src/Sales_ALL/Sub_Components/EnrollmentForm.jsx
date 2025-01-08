@@ -716,6 +716,7 @@ const EnrollmentForm = () => {
           </Box>
 
           {/*--------------------------- Section 6: Payment Details ---------------------------*/}
+          
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom sx={{ color: "#1565c0" }}>
               Section 6: Payment Details
@@ -813,6 +814,7 @@ const EnrollmentForm = () => {
           </Box>
 
           {/*--------------------------- Submit Button ---------------------------*/}
+
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Button
               variant="contained"

@@ -8,6 +8,7 @@ import { getImage, UploadImage } from "../controllers/ImageController.js"
 import { fetchEnrolledStudentDetails, postEnrolledStudent } from "../controllers/enrolledStudent.js"
 import { getCurrentStudentId, updateStudentEnrollment,  } from "../controllers/studentEnrollmentNumber.js"
 import uploadimg from "../utils/uploadimg.js"
+import { fetchCallingStudentDetails } from "../controllers/callingStudent.js"
 
 const router = express.Router()
 
@@ -29,19 +30,19 @@ router.get("/allEnquiryDetails/:salesName", fetchEnquiryDetails)
 router.put("/update-sales-enquiryResponse", updateEnquiryDetails)
 router.post("/addEnquiryDetails", addEnquiry)
 router.delete("/delete-sales-enquiryDetails", deleteEnquiryDetails)
+
 router.post("/add-Confirmed_Student_Details", addConfirmStudentDetails)
 router.get("/Confirmed_Student_Details/:salesName", fetchConfirmStudentDetails)
-
 router.post("/Student-Enrolled-Images",uploadimg.single("file"), UploadImage);
-
 router.get("/file/:filename", getImage)
-router.get("/enrolled-student-details/:salesName", fetchEnrolledStudentDetails)
+router.delete("/confirm-student-details-delete",deleteConfirmStudentDetails)
 
+router.get("/enrolled-student-details/:salesName", fetchEnrolledStudentDetails)
 router.post("/Student-Enrolled-Details", postEnrolledStudent);
 router.get("/Student-Enrolled-Number", getCurrentStudentId);
 router.put("/Student-Enrolled-Details-Update", updateStudentEnrollment);
 
-router.delete("/confirm-student-details-delete",deleteConfirmStudentDetails)
+router.get("/calling-student-details",fetchCallingStudentDetails)
 
 
 
