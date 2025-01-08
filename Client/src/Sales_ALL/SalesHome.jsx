@@ -15,7 +15,6 @@ import EnrolledStudent from "./components/EnrolledStudent";
 
 const SalesHome = () => {
 
-<<<<<<< HEAD
   const [selectedOption, setSelectedOption] = useState(
     sessionStorage.getItem("selectedOption") || "Add Enquiry"
   );
@@ -23,9 +22,7 @@ const SalesHome = () => {
   useEffect(() => {
     sessionStorage.setItem("selectedOption", selectedOption);
   }, [selectedOption]);
-=======
-  const [selectedOption, setSelectedOption] = useState("Add Enquiry");
->>>>>>> 7b8cde19163ac237036aa52c66321f6849182de1
+
 
   const options = [
     { label: "Add Enquiry", icon: <AddIcon />, key: "Add Enquiry" },
