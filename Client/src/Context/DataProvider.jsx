@@ -8,6 +8,8 @@ export const DataContext = createContext({
 const DataProvider = ({ children }) => {
 
   const backendUrl = "http://localhost:5000"
+
+  // -------------------------------------------------
   
   const [role, setRole] = useState(() => {
     const savedRole = sessionStorage.getItem("role");
@@ -20,6 +22,8 @@ const DataProvider = ({ children }) => {
     }
   }, [role]);  
 
+  // -------------------------------------------------
+  
   const [account, setAccount] = useState(() => {
     const savedAccount = sessionStorage.getItem("account");
     return savedAccount ? JSON.parse(savedAccount) : { username: "", name: "" };
@@ -29,6 +33,17 @@ const DataProvider = ({ children }) => {
     sessionStorage.setItem("account", JSON.stringify(account));
   }, [account]);
 
+  // ------------------------------------------------------
+
+  const [confirmedStudentDone, setConfirmedStudentDone] = useState(() => {
+    const savedStudent = sessionStorage.getItem("confirmedStudentDone");
+    return savedStudent ? JSON.parse(savedStudent) : null;
+  });
+  
+  useEffect(() => {
+    sessionStorage.setItem("confirmedStudentDone", JSON.stringify(confirmedStudentDone));
+  }, [confirmedStudentDone]);
+
   return (
     <DataContext.Provider value={{
       account,
@@ -36,6 +51,8 @@ const DataProvider = ({ children }) => {
       role,
       setRole,
       backendUrl,
+      confirmedStudentDone,
+      setConfirmedStudentDone
     }}>
       {children}
     </DataContext.Provider>

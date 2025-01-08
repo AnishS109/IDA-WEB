@@ -1,62 +1,122 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from "axios";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
-import {DataContext} from "../../Context/DataProvider";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress, Typography } from '@mui/material';
+import { DataContext } from "../../Context/DataProvider";
+import { NavLink } from "react-router-dom";
 
 const Confirmed = () => {
-  const { backendUrl, account } = useContext(DataContext);
+  const { backendUrl, account, confirmedStudentDone } = useContext(DataContext);
   const [confirmStudentDetails, setConfirmStudentDetails] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
+  // Initialize confirmedStudent state from session storage
+  const [confirmedStudent, setConfirmedStudent] = useState(() => {
+    const savedStudent = sessionStorage.getItem("confirmedStudent");
+    return savedStudent ? JSON.parse(savedStudent) : null;
+  });
+
+  // Store confirmedStudent in session storage when it changes
+  useEffect(() => {
+    sessionStorage.setItem("confirmedStudent", JSON.stringify(confirmedStudent));
+  }, [confirmedStudent]);
+
+  // Fetch confirmed student details
   useEffect(() => {
     const fetchConfirmedStudent = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`${backendUrl}/Confirmed_Student_Details/${account.name}`);
         setConfirmStudentDetails(response.data);
       } catch (error) {
         console.error('ERROR WHILE FETCHING CONFIRMED STUDENT DETAILS', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchConfirmedStudent();
   }, [backendUrl, account.name]);
 
+  // Delete confirmed student details if conditions are met
+  useEffect(() => {
+    const deleteConfirmStudentDetails = async () => {
+      if (confirmedStudentDone && confirmedStudent) {
+        const reqData = { salesName: account.name, fullName: confirmedStudent };
+
+        try {
+          const response = await axios.delete(`${backendUrl}/confirm-student-details-delete`, { data: reqData });
+          console.log("Deleted successfully:", response.data);
+
+          // Optionally refresh the confirmedStudentDetails list
+          setConfirmStudentDetails((prevDetails) =>
+            prevDetails.filter((student) => student.fullName !== confirmedStudent)
+          );
+
+          // Clear the confirmed student from state and session storage
+          setConfirmedStudent(null);
+        } catch (error) {
+          console.log("ERROR WHILE DELETING CONFIRMED DETAILS", error);
+        }
+      }
+    };
+
+    deleteConfirmStudentDetails();
+  }, [confirmedStudentDone]);
+
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell align="center"><b>FULL NAME</b></TableCell>
-              <TableCell align="center"><b>COURSE</b></TableCell>
-              <TableCell align="center"><b>CONTACT</b></TableCell>
-              <TableCell align="center"><b>ENROLL STUDENT</b></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {confirmStudentDetails.map((student, index) => (
-              <TableRow key={index}>
-                <TableCell align="center">{student.fullName}</TableCell>
-                <TableCell align="center">{student.courseSpecialisation}</TableCell>
-                <TableCell align="center">{student.contact_no}</TableCell>
-                <TableCell align="center">
-                <Button
-                  variant="outlined"
-                  sx={{
-                    ':hover': {
-                      variant: 'contained',
-                      backgroundColor: 'primary.main', 
-                      color: 'white',
-                    },
-                  }}
-                >
-                  Enroll
-                </Button>
-
-                </TableCell>
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+          <CircularProgress />
+        </div>
+      ) : confirmStudentDetails.length === 0 ? (
+        <Typography
+          variant="h6"
+          align="center"
+          color="textSecondary"
+          style={{ marginTop: '20px' }}
+        >
+          No Confirmed Student Details Available
+        </Typography>
+      ) : (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center"><b>FULL NAME</b></TableCell>
+                <TableCell align="center"><b>COURSE</b></TableCell>
+                <TableCell align="center"><b>CONTACT</b></TableCell>
+                <TableCell align="center"><b>ENROLL STUDENT</b></TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {confirmStudentDetails.map((student, index) => (
+                <TableRow key={index}>
+                  <TableCell align="center">{student.fullName}</TableCell>
+                  <TableCell align="center">{student.courseSpecialisation}</TableCell>
+                  <TableCell align="center">{student.contact_no}</TableCell>
+                  <TableCell align="center">
+                    <NavLink to={"/enrollment-form"}>
+                      <Button
+                        variant="outlined"
+                        sx={{
+                          ':hover': {
+                            variant: 'contained',
+                            backgroundColor: 'primary.main',
+                            color: 'white',
+                          },
+                        }}
+                        onClick={() => setConfirmedStudent(student.fullName)}
+                      >
+                        Enroll
+                      </Button>
+                    </NavLink>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </>
   );
 };

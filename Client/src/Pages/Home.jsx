@@ -232,7 +232,7 @@ const Home = () => {
                 }}
                 onClick={() => setRole("Sales")}
               >
-                Sales
+              Sales
               </Typography>
             </NavLink>
           </Box>

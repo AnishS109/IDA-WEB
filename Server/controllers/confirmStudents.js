@@ -1,7 +1,7 @@
 import confirmStudentSchema from "../models/confirmStudentSchema.js"
 
 
-// -------------- Add ConfirmStudent Details (POST REQUEST)---------------
+// -------------- Add ConfirmStudent Details (POST REQUEST) ---------------
 
 export const addConfirmStudentDetails = async(req, res) => {
   const {salesName, ...otherDetails} = req.body
@@ -21,7 +21,7 @@ export const addConfirmStudentDetails = async(req, res) => {
   }
 }
 
-// -------------- Fetch ConfirmStudent Details (GET REQUEST)---------------
+// -------------- Fetch ConfirmStudent Details (GET REQUEST) ---------------
 
 export const fetchConfirmStudentDetails = async(req, res) => {
   const salesName = req.params.salesName
@@ -38,3 +38,22 @@ export const fetchConfirmStudentDetails = async(req, res) => {
     return res.status(500).json({message:"Internal Server Error"})
   }
 }
+
+// -------------- Deleting ConfirmStudent Details (DELETE REQUEST) ---------------
+
+export const deleteConfirmStudentDetails = async (req, res) => {
+  const { salesName, fullName } = req.body; 
+
+  try {
+    const deletedEnquiry = await confirmStudentSchema.deleteOne({ salesName, fullName });
+
+    if (deletedEnquiry.deletedCount === 0) {
+      return res.status(404).json({ message: "Student not found or already deleted." });
+    }
+
+    return res.status(200).json({ message: "Student Confirm Delete Successfully deleted successfully." });
+  } catch (error) {
+    console.error("INTERNAL SERVER ERROR", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};

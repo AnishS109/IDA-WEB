@@ -1,0 +1,43 @@
+import mongoose from "mongoose";
+
+const enrolledstudentschema = new mongoose.Schema({
+  studentId:{ type: String },
+  salesName: { type: String },
+  fullName: { type: String },
+  photo: { type: String }, 
+  fathersName: { type: String },
+  mothersName: { type: String },
+  dob: { type: String }, 
+  mobileNumber: { type: String },
+  email: { type: String },
+  qualification: { type: String },
+  passingYear: { type: String },
+  college: { type: String },
+  occupation: { type: String },
+  gender: { type: String },
+  presentAddress: { type: String },
+  presentAddressPincode: { type: String },
+  permanentAddress: { type: String },
+  permanentAddressPincode: { type: String },
+  document: { type: String },
+  documentImage: { type: String }, 
+  emergencyContactName: { type: String },
+  emergencyContactMobile: { type: String },
+  emergencyContactRelation: { type: String },
+  emergencyContactFatherNumber: { type: String },
+  courseName: { type: String },
+  totalFee: { type: String },
+  registrationFee: { type: String },
+  admissionType: { type: String },
+  paymentType: { type: String },
+  paymentReceived: { type: String },
+  paymentMode: { type: String },
+  paymentScreenshot: { type: String },
+  paymentDate: { type: String },
+  courseStartDate: { type: String },
+  numberOfInstallment: { type: String },
+});
+
+const EnrolledStudentSchema = mongoose.model("enrolledstudents", enrolledstudentschema);
+
+export default EnrolledStudentSchema;

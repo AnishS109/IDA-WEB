@@ -48,7 +48,6 @@ const AddEnquiry = () => {
   
 
   const initialState = {
-    studentID: `${new Date().toISOString().slice(0, 10)}-IDAstudent001`,
     fullName: '',
     contact_no: '',
     current_Address: '',
@@ -121,15 +120,6 @@ const AddEnquiry = () => {
 
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Student ID"
-                  name="studentID"
-                  value={state.studentID}
-                  onChange={handleChange}
-                />
-              </Grid>
 
               {/*Section 1: Lead Details */}
 

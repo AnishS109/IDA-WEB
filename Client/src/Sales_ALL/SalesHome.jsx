@@ -15,7 +15,13 @@ import EnrolledStudent from "./components/EnrolledStudent";
 
 const SalesHome = () => {
 
-  const [selectedOption, setSelectedOption] = useState(localStorage.getItem("selectedOption") || "Add Enquiry");
+  const [selectedOption, setSelectedOption] = useState(
+    sessionStorage.getItem("selectedOption") || "Add Enquiry"
+  );
+
+  useEffect(() => {
+    sessionStorage.setItem("selectedOption", selectedOption);
+  }, [selectedOption]);
 
   const options = [
     { label: "Add Enquiry", icon: <AddIcon />, key: "Add Enquiry" },
@@ -24,10 +30,6 @@ const SalesHome = () => {
     { label: "Confirmed", icon: <CheckCircleOutlineIcon />, key: "Confirmed" },
     { label: "Enrolled Student", icon: <SchoolIcon />, key: "Enrolled Student" }
   ];
-
-  useEffect(() => {
-    localStorage.setItem("selectedOption", selectedOption);
-  }, [selectedOption]);
 
   const Content = () => {
     if (selectedOption === "Add Enquiry") {

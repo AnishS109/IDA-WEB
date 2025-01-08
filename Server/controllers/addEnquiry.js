@@ -3,16 +3,12 @@ import addEnquirySchema from "../models/addEnquirySchema.js"
 // -------------- Add Enquiry Details (POST REQUEST)---------------
 
 export const addEnquiry = async(req, res) => {
-  const { studentID, ...otherDetails } = req.body
+  const { ...otherDetails } = req.body
   // console.log(req.body);
   
   try {
-    const studentIDExist = await addEnquirySchema.findOne({studentID})
-    if(studentIDExist){
-      return res.status(400).json({message:"Student ID already Exist"})
-    }
 
-    const student = new addEnquirySchema({ studentID, ...otherDetails })
+    const student = new addEnquirySchema({ ...otherDetails })
     await student.save()
     res.status(200).json({message:"SuccessFully Submitted"})
 

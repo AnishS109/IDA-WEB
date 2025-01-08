@@ -1,11 +1,6 @@
 import mongoose from "mongoose"
 
 const addenquirySchema = new mongoose.Schema({
-  studentID:{
-    type:String,
-    unique:true,
-    required:true
-  },
   fullName:{
     type:String,
     required:true
