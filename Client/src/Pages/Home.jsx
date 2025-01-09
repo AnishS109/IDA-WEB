@@ -62,6 +62,7 @@ const Home = () => {
           }}
         >
           {/* Admin */}
+          <NavLink to={"/login"}>
           <Box
             sx={{
               position: "relative",
@@ -79,6 +80,7 @@ const Home = () => {
                 boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
               },
             }}
+            onClick={() => setRole("Admin")}
           >
             <NavLink to={"/login"}>
               <Typography
@@ -104,8 +106,10 @@ const Home = () => {
               </Typography>
             </NavLink>
           </Box>
+          </NavLink>  
 
           {/* HR */}
+          <NavLink to={"/login"}>
           <Box
             sx={{
               position: "relative",
@@ -123,6 +127,7 @@ const Home = () => {
                 boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
               },
             }}
+            onClick={() => setRole("HR")}
           >
             <NavLink to={"/login"}>
               <Typography
@@ -148,8 +153,10 @@ const Home = () => {
               </Typography>
             </NavLink>
           </Box>
+          </NavLink>
 
           {/* Faculty */}
+          <NavLink to={"/login"}>
           <Box
             sx={{
               position: "relative",
@@ -167,6 +174,7 @@ const Home = () => {
                 boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
               },
             }}
+            onClick={() => setRole("Faculty")}
           >
             <NavLink to={"/login"}>
               <Typography
@@ -192,8 +200,10 @@ const Home = () => {
               </Typography>
             </NavLink>
           </Box>
+          </NavLink>
 
           {/* Sales */}
+          <NavLink to={"/login"}>
           <Box
             sx={{
               position: "relative",
@@ -211,6 +221,7 @@ const Home = () => {
                 boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
               },
             }}
+            onClick={() => setRole("Sales")}
           >
             <NavLink to={"/login"}>
               <Typography
@@ -236,6 +247,7 @@ const Home = () => {
               </Typography>
             </NavLink>
           </Box>
+          </NavLink>
         </Box>
       </Box>
     </Layout>
