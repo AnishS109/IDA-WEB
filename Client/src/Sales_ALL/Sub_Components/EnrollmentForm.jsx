@@ -35,6 +35,9 @@ const EnrollmentForm = () => {
   const [uploadingStudentImage, setUploadingImageStudent] = useState(false);
   const [uploadingDocumentImage, setUploadingImageDocument] = useState(false);
   const [uploadingPaymentSSImage, setUploadingImagePaymentSS] = useState(false);
+  const [staffType, setStaffType] = useState('');
+  const [referenceType, setReferenceType] = useState('');
+  const [leadSource, setLeadSource] = useState('');
 
   const Navigate = useNavigate()
 
@@ -103,6 +106,11 @@ const EnrollmentForm = () => {
     courseStartDate: "",
     paymentType: "",
     numberOfInstallment: "",
+    leadSource: leadSource,
+    refType: referenceType,
+    staffType: staffType,
+    studentName: "",
+    staffName: "",
   });
 
   // -------- Form field ke value ko handle karne ke liye --------
@@ -784,7 +792,7 @@ const EnrollmentForm = () => {
                     name="paymentSSFoto"
                     accept="image/*"
                     onChange={handleFileChange}
-                  />
+                    />
                 </Button>
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
                   <Avatar
@@ -812,15 +820,107 @@ const EnrollmentForm = () => {
               </Grid>
             </Grid>
           </Box>
+          {/*--------------------------- ENROLLED STUDENT REFERENCE ---------------------------*/}
+
+          <Grid container spacing={3}>
+          <Grid item xs={12}>
+          <Typography variant="h6" gutterBottom sx={{ color: "#1565c0", mb:"20px" }}>
+                      Section 7: Enrolled Student Reference
+                    </Typography>
+            <FormControl fullWidth>
+              <InputLabel>Lead Source</InputLabel>
+              <Select
+                value={formData.leadSource}
+                label="Lead Source"
+                name="leadSource"
+                onChange={(e) => {
+                  handleChange(e);
+                  setLeadSource(e.target.value);
+                }}
+              >
+                <MenuItem value="JustDial">Just Dial</MenuItem>
+                <MenuItem value="ByCalling">By Calling</MenuItem>
+                <MenuItem value="Direct">Direct</MenuItem>
+                <MenuItem value="Website">Website</MenuItem>
+                <MenuItem value="GoogleMap">Google Map</MenuItem>
+                <MenuItem value="Reference">Reference</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Reference Type Section */}
+          {formData.leadSource === "Reference" && (
+            <Grid item xs={12}>
+              <FormControl component="fieldset" fullWidth sx={{ marginBottom: "0px" }}>
+                <FormLabel component="legend">Reference Type</FormLabel>
+                <RadioGroup
+                  value={formData.refType}
+                  onChange={(e) => {
+                    setReferenceType(e.target.value);
+                    handleChange(e);
+                  }}
+                  name="refType"
+                >
+                  <FormControlLabel value="Student" control={<Radio />} label="Student" />
+                  <FormControlLabel value="Staff" control={<Radio />} label="Staff" />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+          )}
+
+          {/* Student Reference */}
+          {formData.refType === "Student" && (
+            <Grid item xs={12} sx={{ marginTop: "10px" }}>
+              <FormControl component="fieldset" fullWidth sx={{ marginBottom: "10px" }}>
+                <FormLabel component="legend">Student Reference Type</FormLabel>
+                <RadioGroup
+                  value={formData.staffType}
+                  onChange={(e) => {
+                    setStaffType(e.target.value);
+                    handleChange(e);
+                  }}
+                  name="staffType"
+                >
+                  <FormControlLabel value="Existing" control={<Radio />} label="Existing" />
+                  <FormControlLabel value="NonExisting" control={<Radio />} label="Non-Existing" />
+                </RadioGroup>
+              </FormControl>
+
+              <TextField
+                fullWidth
+                label="Student Name"
+                name="studentName"
+                value={formData.studentName}
+                onChange={(e) => handleChange(e)}
+                sx={{ marginBottom: "20px" }}
+              />
+            </Grid>
+              )}
+
+              {/* Staff Reference */}
+              {formData.refType === "Staff" && (
+                <Grid item xs={12} sx={{ marginTop: "0px" }}>
+                  <TextField
+                    fullWidth
+                    label="Staff Name"
+                    name="staffName"
+                    value={formData.staffName}
+                    onChange={(e) => handleChange(e)}
+                    sx={{ marginBottom: "20px" }}
+                  />
+                </Grid>
+              )}
+            </Grid>
+
 
           {/*--------------------------- Submit Button ---------------------------*/}
 
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt:"25px" }}>
             <Button
               variant="contained"
               color="primary"
               type="submit"
-              disabled={!formData.fullName || !formData.photo || !formData.courseName}
+              disabled={!formData.fullName || !formData.photo || !formData.courseName || !formData.leadSource}
             >
               Submit Enrollment Form
             </Button>

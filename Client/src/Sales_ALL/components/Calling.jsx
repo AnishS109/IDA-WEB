@@ -1,159 +1,111 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
-import { DataContext } from '../../Context/DataProvider';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, Pagination, TextField, CircularProgress, Box } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import React, { useState } from 'react'
+import AllCalling from "../Calling_Section/AllCalling"
+import CallRejected from '../Calling_Section/CallRejected'
+import NotPickedCall from "../Calling_Section/NotPickedCall"
+import NotInterested from "../Calling_Section/NotInterested"
+import CallBack from "../Calling_Section/CallBack"
+import CallForwarded from "../Calling_Section/CallForwarded"
+import CallRejectedInBetween from "../Calling_Section/CallRejectedInBetween"
+import Interested from "../Calling_Section/Interested"
+import JoinedOtherCoaching from "../Calling_Section/JoinedOtherCoaching"
+import NotRequiredCourse from "../Calling_Section/NotRequiredCourse"
+import WillVisit from "../Calling_Section/WillVisit"
+import AlreadyPlaced from '../Calling_Section/AlreadyPlaced'
+import Visited from '../Calling_Section/Visited'
 
 const Calling = () => {
-  const [callingStudentDetails, setCallingStudentDetails] = useState([]);
-  const [page, setPage] = useState(1); 
-  const [limit] = useState(50); 
-  const [totalPages, setTotalPages] = useState(0); 
-  const [totalItems, setTotalItems] = useState(0); 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false); // Loading state
 
-  const { backendUrl } = useContext(DataContext);
-
-  // Fetching data from backend (supports both pagination and search)
-  const fetchCallingStudentData = async (page, searchTerm = '') => {
-    try {
-      setLoading(true); // Set loading to true when starting to fetch data
-      const response = await axios.get(`${backendUrl}/calling-student-details`, {
-        params: { page, limit, searchTerm }, // Pass searchTerm as a query parameter
-      });
-
-      if (response.status === 200) {
-        setCallingStudentDetails(response.data.callingStudentData);
-        setTotalItems(response.data.pagination?.totalItems || response.data.callingStudentData.length); // For pagination
-        setTotalPages(response.data.pagination ? Math.ceil(response.data.pagination.totalItems / limit) : 1); // Set total pages
-      }
-    } catch (error) {
-      console.error('ERROR WHILE FETCHING THE CALLING DATA', error);
-    } finally {
-      setLoading(false);  
-    }
-  };
-
-  // Fetch data when page or search term changes
-  useEffect(() => {
-    fetchCallingStudentData(page, searchTerm);
-  }, [backendUrl, page, searchTerm]);
-
-  const handlePageChange = (event, value) => {
-    setPage(value); // Update page state
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value); // Update search term state
-    setPage(1); // Reset to first page when searching
-  };
+  const [selectedCategory, setSelectedCategory] = useState("All")
 
   return (
     <div>
-      {/* Search Bar */}
-      <TextField
-        label="Search by Name or Responses"
-        variant="outlined"
-        value={searchTerm}
-        onChange={handleSearchChange}
-        sx={{ marginBottom: 2, width: '100%' }}
-      />
 
-      {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
-          <CircularProgress />
-        </Box>
-      ) : callingStudentDetails.length === 0 ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
-          <Typography variant="h6">No Data Found</Typography>
-        </Box>
-      ) : (
-        <>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="center"><b>Name</b></TableCell>
-                <TableCell align="center"><b>DOB</b></TableCell>
-                <TableCell align="center"><b>Mobile No</b></TableCell>
-                {Array.from({ length: 10 }).map((_, idx) => (
-                  <TableCell key={idx} align="center">
-                    <b>Response {idx + 1}</b>
-                  </TableCell>
-                ))}
-                <TableCell align="center">Confirm</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {callingStudentDetails
-                .filter(enquiry => enquiry.Name) // Ensure Name exists
-                .map((enquiry, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="center">{enquiry.Name}</TableCell>
-                    <TableCell align="center">{enquiry.DOB}</TableCell>
-                    <TableCell align="center">{enquiry.Mobile_No}</TableCell>
-                    {Array.from({ length: 10 }).map((_, idx) => {
-                      const responseKey = `response${idx + 1}`;
-                      return (
-                        <TableCell key={idx} align="center">
-                          {enquiry[responseKey] ? (
-                            <Typography>{enquiry[responseKey]}</Typography>
-                          ) : (
-                            <Button
-                              variant="outlined"
-                              color="primary"
-                              size="small"
-                              sx={{
-                                textTransform: 'none',
-                                "&:hover": {
-                                  backgroundColor: "primary.main",
-                                  color: "white",
-                                  borderColor: "transparent",
-                                },
-                              }}
-                            >
-                              Response
-                            </Button>
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                    <TableCell align="center">
-                      <Button
-                        variant="contained"
-                        color="success"
-                        size="small"
-                        sx={{
-                          border: "1px solid transparent",
-                          textTransform: "none",
-                          "&:hover": {
-                            backgroundColor: "transparent",
-                            color: "success.main",
-                            borderColor: "success.main",
-                          },
-                        }}
-                      >
-                        Confirmed
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
+      <FormControl fullWidth placeholder="Select Calling Categories" sx={{mb:"15px"}}>
 
-          {/* Pagination Control */}
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-            sx={{ mt: 2 }}
-            boundaryCount={2}
-            siblingCount={1}  
-          />
-        </>
-      )}
+      <InputLabel >
+        Calling Categories
+      </InputLabel>
+
+      <Select
+      name='callingCategory'
+      onChange={(e) => setSelectedCategory(e.target.value)}
+      >
+
+      <MenuItem value="All">All</MenuItem>
+      <MenuItem value="Call Rejected">Call Rejected</MenuItem>
+      <MenuItem value="Not Picked Call">Not Picked Call</MenuItem>
+      <MenuItem value="Not Interested">Not Interested</MenuItem>
+      <MenuItem value="Interested">Interested</MenuItem>
+      <MenuItem value="Call Forwarded">Call Forwarded</MenuItem>
+      <MenuItem value="Will Visit">Will Visit</MenuItem>
+      <MenuItem value="Alread Placed">Alread Placed</MenuItem>
+      <MenuItem value="Not Require Any Course">Not Require Any Course</MenuItem>
+      <MenuItem value="Call Back">Call Back</MenuItem>
+      <MenuItem value="Joined Other Institute">Joined Other Institute</MenuItem>
+      <MenuItem value="Call Rejected In Between">Call Rejected In Between</MenuItem>
+      <MenuItem value="Visited">Visited</MenuItem>
+
+      </Select>
+      </FormControl>
+
+      {selectedCategory === "All" ? 
+      (
+        <AllCalling/>
+      ):
+      selectedCategory === "Call Rejected" ? 
+      (
+        <CallRejected/>
+      ):
+      selectedCategory === "Not Picked Call" ? 
+      (
+        <NotPickedCall/>
+      ):
+      selectedCategory === "Not Interested" ? 
+      (
+        <NotInterested/>
+      ):
+      selectedCategory === "Interested" ? 
+      (
+        <Interested/>
+      ):
+      selectedCategory === "Call Forwarded" ? 
+      (
+        <CallForwarded/>
+      ):
+      selectedCategory === "Will Visit" ? 
+      (
+        <WillVisit/>
+      ):
+      selectedCategory === "Alread Placed" ? 
+      (
+        <AlreadyPlaced/>
+      ):
+      selectedCategory === "Not Require Any Course" ? 
+      (
+        <NotRequiredCourse/>
+      ):
+      selectedCategory === "Call Back" ? 
+      (
+        <CallBack/>
+      ):
+      selectedCategory === "Joined Other Institute" ? 
+      (
+        <JoinedOtherCoaching/>
+      ):
+      selectedCategory === "Call Rejected In Between" ? 
+      (
+        <CallRejectedInBetween/>
+      ):
+      selectedCategory === "Visited" ? 
+      (
+        <Visited/>
+      ):
+      (<h1>Please Select Category</h1>)
+      }
+      
     </div>
-  );
-};
+  )
+}
 
-export default Calling;
+export default Calling

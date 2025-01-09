@@ -7,23 +7,48 @@ const callingtudentSchema = new mongoose.Schema({
   Name:{
     type:String,
   },
-DOB:{
+  DOB:{
     type:String,
   },
   Mobile_No:{
     type:String,
   },
-Email_ID:{
-    type:String,
-  },
-
+  Email_ID:{
+      type:String,
+    },
   Branch:{
+      type:String,
+    },
+  Course:{
+      type:String,
+    },
+  response1:{
     type:String,
   },
-  
-Course:{
+  response2:{
     type:String,
-  }
+  },
+  response3:{
+    type:String,
+  },
+  response4:{
+    type:String,
+  },
+  response5:{
+    type:String,
+  },
+  response6:{
+    type:String,
+  },
+  response7:{
+    type:String,
+  },
+  response8:{
+    type:String,
+  },
+  salesName:{
+    type:String,
+  },
 })
 
 const CallingStudentSchema = mongoose.model("callingstudentsdatas", callingtudentSchema)

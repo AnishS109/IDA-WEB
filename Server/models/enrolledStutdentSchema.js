@@ -36,6 +36,11 @@ const enrolledstudentschema = new mongoose.Schema({
   paymentDate: { type: String },
   courseStartDate: { type: String },
   numberOfInstallment: { type: String },
+  leadSource: { type: String },
+  refType: { type: String },
+  staffType: { type: String },
+  studentName: { type: String },
+  staffName: { type: String },
 });
 
 const EnrolledStudentSchema = mongoose.model("enrolledstudents", enrolledstudentschema);

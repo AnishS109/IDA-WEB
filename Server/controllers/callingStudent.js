@@ -2,19 +2,16 @@ import CallingStudentSchema from "../models/callingStudentSchema.js";
 
 export const fetchCallingStudentDetails = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
-    const limit = parseInt(req.query.limit) || 50; // Default limit to 50 if not provided
-    const searchTerm = req.query.searchTerm || ""; // Get the searchTerm from query params
-
+    const page = parseInt(req.query.page) || 1; 
+    const limit = parseInt(req.query.limit) || 50; 
+    const searchTerm = req.query.searchTerm || ""; 
     let query = {};
     let callingStudentData;
     let totalStudents;
-
-    // If a search term is provided, perform exact match
     if (searchTerm) {
       query.$or = [
-        { Name: searchTerm }, // Exact match in the Name field
-        { response1: searchTerm }, // Exact match in response fields
+        { Name: searchTerm }, 
+        { response1: searchTerm }, 
         { response2: searchTerm },
         { response3: searchTerm },
         { response4: searchTerm },
@@ -26,37 +23,63 @@ export const fetchCallingStudentDetails = async (req, res) => {
         { response10: searchTerm },
       ];
 
-      // Fetch all matching records
       callingStudentData = await CallingStudentSchema.find(query).lean();
       totalStudents = callingStudentData.length; 
     } else {
-      // If no search term, return paginated results
       const skip = (page - 1) * limit;
-
       callingStudentData = await CallingStudentSchema.find()
         .skip(skip)
         .limit(limit)
         .lean();
 
-      totalStudents = await CallingStudentSchema.countDocuments(); // Total records in the collection
+      totalStudents = await CallingStudentSchema.countDocuments(); 
     }
-
     if (!callingStudentData || callingStudentData.length === 0) {
       return res.status(400).json({ msg: "No students found!" });
     }
-
     const totalPages = Math.ceil(totalStudents / limit);
-
     return res.status(200).json({
       callingStudentData,
       pagination: searchTerm
-        ? null // No pagination for search results
+        ? null
         : {
             totalItems: totalStudents,
             currentPage: page,
             totalPages,
           },
     });
+  } catch (error) {
+    console.error("INTERNAL SERVER ERROR", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+// ------------------ SET RESPONSE CALLING STUDENT (POST REQUEST) -------------------
+
+export const updateCallingDetails = async (req, res) => {
+  const { fullName, ...otherDetails } = req.body;
+
+  try { 
+    const callingData = await CallingStudentSchema.findOne({ Name: fullName });
+
+    if (callingData.salesName && callingData.salesName !== otherDetails.salesName) {
+      return res.status(403).json({ 
+        message: `You are not authorized to update responses for ${fullName}` 
+      });
+    }
+
+    if (!callingData) {
+      return res.status(404).json({ message: "Data not found" });
+    }
+
+    Object.keys(otherDetails).forEach((key) => {
+      callingData[key] = otherDetails[key];
+    });
+    
+    await callingData.save();
+    
+    return res.status(200).json(callingData);
   } catch (error) {
     console.error("INTERNAL SERVER ERROR", error);
     return res.status(500).json({ message: "Internal Server Error" });

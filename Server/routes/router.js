@@ -8,7 +8,8 @@ import { getImage, UploadImage } from "../controllers/ImageController.js"
 import { fetchEnrolledStudentDetails, postEnrolledStudent } from "../controllers/enrolledStudent.js"
 import { getCurrentStudentId, updateStudentEnrollment,  } from "../controllers/studentEnrollmentNumber.js"
 import uploadimg from "../utils/uploadimg.js"
-import { fetchCallingStudentDetails } from "../controllers/callingStudent.js"
+import { fetchCallingStudentDetails, updateCallingDetails } from "../controllers/callingStudent.js"
+import { callCategoryData } from "../controllers/callCategory.js"
 
 const router = express.Router()
 
@@ -43,7 +44,11 @@ router.get("/Student-Enrolled-Number", getCurrentStudentId);
 router.put("/Student-Enrolled-Details-Update", updateStudentEnrollment);
 
 router.get("/calling-student-details",fetchCallingStudentDetails)
+router.put("/calling-student-update-details",updateCallingDetails)
 
+
+
+router.get("/Call-Category-Data", callCategoryData);
 
 
 
