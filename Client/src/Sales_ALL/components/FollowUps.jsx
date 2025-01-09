@@ -19,6 +19,7 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  TextField,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { DataContext } from '../../Context/DataProvider';
@@ -56,6 +57,8 @@ const FollowUps = () => {
   const [messageModal, setMessageModal] = useState({ open: false, message: '', severity: 'success' });
   const [loading, setLoading] = useState(false); // Loader for data fetching
   const [saving, setSaving] = useState(false); // Loader for saving/updating data
+  const [filteredStudentDetails, setFilteredStudentDetails] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("")
 
   // Fetch data from the backend
   useEffect(() => {
@@ -64,6 +67,7 @@ const FollowUps = () => {
       try {
         const response = await axios.get(`${backendUrl}/allEnquiryDetails/${salesName}`);
         setEnquiryData(response.data);
+        setFilteredStudentDetails(response.data)
       } catch (error) {
         console.error('ERROR WHILE FETCHING ENQUIRY DATA', error);
       } finally {
@@ -126,7 +130,38 @@ const FollowUps = () => {
 
   const handleCloseMessageModal = () => setMessageModal({ ...messageModal, open: false });
 
+const handleSearchChange = (e) => {
+  const value = e.target.value.toLowerCase();
+  setSearchTerm(value);
+
+  const filteredData = enquiryData.filter((enquiry) => {
+    const isNameMatch = enquiry.fullName.toLowerCase().includes(value);
+    const isResponseMatch = Array.from({ length: 10 }).some((_, idx) => {
+      const responseKey = `response${idx + 1}`;
+      return enquiry[responseKey]?.toLowerCase().includes(value);
+    });
+
+    return isNameMatch || isResponseMatch;
+  });
+
+  setFilteredStudentDetails(filteredData);
+};
+
+
   return (
+    <>
+    <Box sx={{ padding: 2 }}>
+    
+      <TextField
+        label="Search by Name or Response"
+        variant="outlined"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        sx={{ marginBottom: 2, width: "100%" }}
+      />
+    
+    </Box>
+
     <Box sx={{ overflowX: 'auto' }}>
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
@@ -148,7 +183,7 @@ const FollowUps = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {enquiryData.map((enquiry, index) => (
+            {filteredStudentDetails.map((enquiry, index) => (
               <TableRow key={index}>
                 <TableCell align="center">{enquiry.fullName}</TableCell>
                 <TableCell align="center">{enquiry.courseSpecialisation}</TableCell>
@@ -160,55 +195,55 @@ const FollowUps = () => {
                       {enquiry[responseKey] ? (
                         <Typography>{enquiry[responseKey]}</Typography>
                       ) : (
-                          <Button
-                            variant="outlined"
-                            color="primary"
-                            size="small"
-                            startIcon={<AddIcon />}
-                            sx={{
-                              textTransform: 'none',
-                              "&:hover": {
-                                backgroundColor: "primary.main", 
-                                color: "white",                
-                                borderColor: "transparent", 
-                              },
-                            }}
-                            onClick={() => handleResponseClick(enquiry, idx)}
-                          >
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          size="small"
+                          startIcon={<AddIcon />}
+                          sx={{
+                            textTransform: 'none',
+                            "&:hover": {
+                              backgroundColor: "primary.main",
+                              color: "white",
+                              borderColor: "transparent",
+                            },
+                          }}
+                          onClick={() => handleResponseClick(enquiry, idx)}
+                        >
                           Response
-                          </Button>
-
+                        </Button>
                       )}
                     </TableCell>
                   );
                 })}
                 <TableCell align="center">
-                <Button
-                  variant="contained"
-                  color="success"
-                  size="small"
-                  sx={{
-                    border: "1px solid transparent",
-                    textTransform: "none",
-                    "&:hover": {
-                      backgroundColor: "transparent", 
-                      color: "success.main",                    
-                      borderColor: "success.main",   
-                    },
-                  }}
-                  onClick={() => handleConfirmedStudent(enquiry)}
-                >
-                  Confirmed
-                </Button>
-
+                  <Button
+                    variant="contained"
+                    color="success"
+                    size="small"
+                    sx={{
+                      border: "1px solid transparent",
+                      textTransform: "none",
+                      "&:hover": {
+                        backgroundColor: "transparent",
+                        color: "success.main",
+                        borderColor: "success.main",
+                      },
+                    }}
+                    onClick={() => handleConfirmedStudent(enquiry)}
+                  >
+                    Confirmed
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
+
         </Table>
       )}
 
-      {/* Response update modal */}
+      {/*------------- Response update modal --------------------*/}
+
       <Dialog open={modalOpen} onClose={handleCancel}>
         <DialogTitle>Update Response</DialogTitle>
         <DialogContent>
@@ -239,7 +274,8 @@ const FollowUps = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Confirm student modal */}
+      {/*------------------- Confirm student modal ------------------------*/}
+
       <Dialog open={openConfimedModal} onClose={handleConfirmModal}>
         <DialogTitle>Confirm Student</DialogTitle>
         <DialogContent>
@@ -255,7 +291,8 @@ const FollowUps = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for messages */}
+      {/*-------------------- Snackbar for messages ---------------------*/}
+
       <Snackbar
         open={messageModal.open}
         autoHideDuration={3000}
@@ -267,6 +304,7 @@ const FollowUps = () => {
         </Alert>
       </Snackbar>
     </Box>
+    </>
   );
 };
 

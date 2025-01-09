@@ -10,9 +10,8 @@ import router from "./routes/router.js";
 dotenv.config();
 
 const app = express();
-const numCPUs = os.cpus().length; // Get the number of CPU cores
+const numCPUs = os.cpus().length; 
 
-// This function will be executed by each worker process
 const startServer = () => {
   app.use(cors());
   app.use("/", router);
@@ -25,20 +24,16 @@ const startServer = () => {
   ConnectionDB();
 };
 
-// If we're in the master process, fork worker processes
-if (cluster.isMaster) {
-  console.log(`Master process is running on PID: ${process.pid}`);
 
-  // Fork workers for each CPU core
+if (cluster.isMaster) {
+
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
 
-  // When a worker dies, log it
   cluster.on('exit', (worker, code, signal) => {
     console.log(`Worker ${worker.process.pid} died`);
   });
 } else {
-  // Workers can share the same server port
   startServer();
 }

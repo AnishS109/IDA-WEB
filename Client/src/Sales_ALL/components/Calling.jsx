@@ -5,61 +5,48 @@ import { Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, P
 
 const Calling = () => {
   const [callingStudentDetails, setCallingStudentDetails] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1); 
   const [limit] = useState(50); 
-  const [totalPages, setTotalPages] = useState(46); 
+  const [totalPages, setTotalPages] = useState(0); 
   const [totalItems, setTotalItems] = useState(0); 
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);  // Loading state
+  const [loading, setLoading] = useState(false); // Loading state
 
   const { backendUrl } = useContext(DataContext);
 
-  const fetchCallingStudentData = async (page) => {
+  // Fetching data from backend (supports both pagination and search)
+  const fetchCallingStudentData = async (page, searchTerm = '') => {
     try {
       setLoading(true); // Set loading to true when starting to fetch data
       const response = await axios.get(`${backendUrl}/calling-student-details`, {
-        params: { page, limit }
+        params: { page, limit, searchTerm }, // Pass searchTerm as a query parameter
       });
 
       if (response.status === 200) {
         setCallingStudentDetails(response.data.callingStudentData);
-        setTotalItems(response.data.pagination.totalItems);
-        setTotalPages(Math.ceil(response.data.pagination.totalItems / limit));
+        setTotalItems(response.data.pagination?.totalItems || response.data.callingStudentData.length); // For pagination
+        setTotalPages(response.data.pagination ? Math.ceil(response.data.pagination.totalItems / limit) : 1); // Set total pages
       }
     } catch (error) {
       console.error('ERROR WHILE FETCHING THE CALLING DATA', error);
     } finally {
-      setLoading(false);  // Set loading to false after data is fetched
+      setLoading(false);  
     }
   };
 
+  // Fetch data when page or search term changes
   useEffect(() => {
-    fetchCallingStudentData(page);
-  }, [backendUrl, page]);
+    fetchCallingStudentData(page, searchTerm);
+  }, [backendUrl, page, searchTerm]);
 
-  // Handle page change
   const handlePageChange = (event, value) => {
-    setPage(value);
+    setPage(value); // Update page state
   };
 
-  // Handle search input
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+    setSearchTerm(e.target.value); // Update search term state
+    setPage(1); // Reset to first page when searching
   };
-
-  // Filter data based on search term
-  useEffect(() => {
-    setLoading(true);  // Set loading to true during filtering
-    const filtered = callingStudentDetails.filter((enquiry) => {
-      const responses = Array.from({ length: 10 }).map((_, idx) => enquiry[`response${idx + 1}`] || '').join(' ').toLowerCase();
-      const nameMatch = enquiry.Name?.toLowerCase().includes(searchTerm.toLowerCase());
-      const responseMatch = responses.includes(searchTerm.toLowerCase());
-      return nameMatch || responseMatch;
-    });
-    setFilteredData(filtered);
-    setLoading(false);  // Set loading to false after filtering
-  }, [callingStudentDetails, searchTerm]);
 
   return (
     <div>
@@ -76,9 +63,9 @@ const Calling = () => {
         <Box display="flex" justifyContent="center" alignItems="center" height="300px">
           <CircularProgress />
         </Box>
-      ) : filteredData.length === 0 ? (
+      ) : callingStudentDetails.length === 0 ? (
         <Box display="flex" justifyContent="center" alignItems="center" height="300px">
-          <CircularProgress />
+          <Typography variant="h6">No Data Found</Typography>
         </Box>
       ) : (
         <>
@@ -97,8 +84,8 @@ const Calling = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredData
-                .filter(enquiry => enquiry.Name)
+              {callingStudentDetails
+                .filter(enquiry => enquiry.Name) // Ensure Name exists
                 .map((enquiry, index) => (
                   <TableRow key={index}>
                     <TableCell align="center">{enquiry.Name}</TableCell>

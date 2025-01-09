@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from "axios";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress, Typography, Box, TextField } from '@mui/material';
 import { DataContext } from "../../Context/DataProvider";
 import { NavLink } from "react-router-dom";
 
@@ -8,6 +8,8 @@ const Confirmed = () => {
   const { backendUrl, account, confirmedStudentDone } = useContext(DataContext);
   const [confirmStudentDetails, setConfirmStudentDetails] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
+  const [filteredStudentDetails, setFilteredStudentDetails] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("")
 
   // Initialize confirmedStudent state from session storage
   const [confirmedStudent, setConfirmedStudent] = useState(() => {
@@ -27,6 +29,7 @@ const Confirmed = () => {
       try {
         const response = await axios.get(`${backendUrl}/Confirmed_Student_Details/${account.name}`);
         setConfirmStudentDetails(response.data);
+        setFilteredStudentDetails(response.data);
       } catch (error) {
         console.error('ERROR WHILE FETCHING CONFIRMED STUDENT DETAILS', error);
       } finally {
@@ -62,13 +65,41 @@ const Confirmed = () => {
     deleteConfirmStudentDetails();
   }, [confirmedStudentDone]);
 
+  const handleSearchChange = (e) => {
+    const searchValue = e.target.value;
+    setSearchTerm(searchValue);
+
+    if (searchValue === "") {
+      setFilteredStudentDetails(confirmStudentDetails); // Reset to original data if search is empty
+    } else {
+      // Filter students based on the search term
+      const filtered = confirmStudentDetails.filter((student) =>
+        student.fullName.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredStudentDetails(filtered);
+    }
+  };
+
   return (
     <>
-      {loading ? (
+
+    <Box sx={{ padding: 2 }}>
+
+     <TextField
+      label="Search by Name"
+      variant="outlined"
+      value={searchTerm}
+      onChange={handleSearchChange}
+      sx={{ marginBottom: 2, width: "100%" }}
+     />
+
+    </Box>
+
+    {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
           <CircularProgress />
         </div>
-      ) : confirmStudentDetails.length === 0 ? (
+      ) : filteredStudentDetails.length === 0 ? (
         <Typography
           variant="h6"
           align="center"
@@ -89,7 +120,7 @@ const Confirmed = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {confirmStudentDetails.map((student, index) => (
+              {filteredStudentDetails.map((student, index) => (
                 <TableRow key={index}>
                   <TableCell align="center">{student.fullName}</TableCell>
                   <TableCell align="center">{student.courseSpecialisation}</TableCell>
