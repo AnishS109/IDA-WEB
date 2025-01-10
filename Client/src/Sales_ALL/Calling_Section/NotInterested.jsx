@@ -1,47 +1,52 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress,Typography } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
 
 const NotInterested = () => {
+  //------------------------- State Variables -------------------------
   const [notInterestedData, setNotInterestedData] = useState([]);
-  const [loading, setLoading] = useState(true);  // Added loading state
-  const { backendUrl, account } = useContext(DataContext);
+  const [loading, setLoading] = useState(true); // State for managing the loading spinner
 
+  // Access backendUrl and account from DataContext
+  const { backendUrl, account } = useContext(DataContext);
+  //-------------------------
+
+  //------------------------- Data Fetching -------------------------
   useEffect(() => {
     const fetchNotInterestedData = async () => {
-      const salesName = account.name;
       try {
-        // Fetch data from the API
+        // Fetch data from the backend API
         const response = await axios.get(`${backendUrl}/Call-Category-Data`, {
-          params: { salesName: account.name },  // Send salesName as query parameter
+          params: { salesName: account.name }, // Pass salesName as a query parameter
         });
 
-        // Filter data with "Rejected Call" category and update the state
+        // Filter data for "Not Interested" category
         const filteredData = response.data.filter((data) => data.category === "Not Interested");
 
-        if (filteredData.length > 0) {
-          setNotInterestedData(filteredData);
-        } else {
-          setNotInterestedData([]);  // Set an empty array if no data
-        }
+        // Update state with the filtered data
+        setNotInterestedData(filteredData.length > 0 ? filteredData : []);
       } catch (error) {
-        console.log("ERROR WHILE FETCHING CALL REJECTED DATA:", error);
+        console.error("ERROR WHILE FETCHING NOT INTERESTED DATA:", error);
       } finally {
-        setLoading(false);  // Set loading to false when the request is completed
+        // Set loading state to false after the request is completed
+        setLoading(false);
       }
     };
 
     fetchNotInterestedData();
-  }, [account.name, backendUrl]);  // Add backendUrl and account.name as dependencies
+  }, [account.name, backendUrl]); // Dependencies to refetch data when necessary
+  //-------------------------
 
+  //------------------------- Render UI -------------------------
   return (
     <Box>
-      {/* Show loading spinner if data is loading */}
+      {/* Show loading spinner while data is being fetched */}
       {loading ? (
-        <CircularProgress />  // Loader will show when loading is true
+        <CircularProgress />
       ) : (
         <>
+          {/* Render data table if data is available */}
           {notInterestedData.length > 0 ? (
             <Table>
               <TableHead>
@@ -51,7 +56,7 @@ const NotInterested = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* Map over callRejectedData and display items with the "Rejected Call" category */}
+                {/* Map over the data to render each row */}
                 {notInterestedData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
@@ -61,9 +66,10 @@ const NotInterested = () => {
               </TableBody>
             </Table>
           ) : (
-                        <Typography variant="h6" align="center" color="textSecondary">
-            No Data available.
-          </Typography>   // Display this if no data is available
+            // Show a message if no data is available
+            <Typography variant="h6" align="center" color="textSecondary">
+              No Data available.
+            </Typography>
           )}
         </>
       )}

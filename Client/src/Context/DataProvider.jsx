@@ -34,7 +34,7 @@ const DataProvider = ({ children }) => {
   }, [account]);
 
   // ------------------------------------------------------
-
+  
   const [confirmedStudentDone, setConfirmedStudentDone] = useState(() => {
     const savedStudent = sessionStorage.getItem("confirmedStudentDone");
     return savedStudent ? JSON.parse(savedStudent) : null;
@@ -44,6 +44,19 @@ const DataProvider = ({ children }) => {
     sessionStorage.setItem("confirmedStudentDone", JSON.stringify(confirmedStudentDone));
   }, [confirmedStudentDone]);
 
+  // ------------------------------------------------------
+
+    // const [CallingStudentname, setCallingStudentName] = useState("");
+
+  const [CallingStudentname, setCallingStudentName] = useState(() => {
+    const savedStudent = sessionStorage.getItem("CallingStudentname");
+    return savedStudent ? JSON.parse(savedStudent) : null;
+  });
+  
+  useEffect(() => {
+    sessionStorage.setItem("CallingStudentname", JSON.stringify(CallingStudentname));
+  }, [CallingStudentname]);
+
   return (
     <DataContext.Provider value={{
       account,
@@ -52,7 +65,9 @@ const DataProvider = ({ children }) => {
       setRole,
       backendUrl,
       confirmedStudentDone,
-      setConfirmedStudentDone
+      setConfirmedStudentDone,
+      setCallingStudentName,
+      CallingStudentname
     }}>
       {children}
     </DataContext.Provider>

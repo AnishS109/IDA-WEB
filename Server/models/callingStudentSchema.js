@@ -49,6 +49,15 @@ const callingtudentSchema = new mongoose.Schema({
   salesName:{
     type:String,
   },
+  visited: {
+    type: Boolean,  // Changed to Boolean to represent true/false
+  },
+  visitDate: {
+    type: Date, // Changed to Date to properly store date values
+  },
+  CallBackvisitDate: {
+    type: Date, // Changed to Date to properly store date values
+  },
 })
 
 const CallingStudentSchema = mongoose.model("callingstudentsdatas", callingtudentSchema)

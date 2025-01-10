@@ -1,5 +1,7 @@
 import StudentIdCounterSchema from "../models/studentIdCounterSchema.js";
 
+// -------------- Student Enrollment Number Details (GET REQUEST)---------------
+
 export const getCurrentStudentId = async (req, res) => {
   try {
     const counter = await StudentIdCounterSchema.findOne({});
@@ -15,6 +17,7 @@ export const getCurrentStudentId = async (req, res) => {
   }
 };
 
+// -------------- Student Enrollment Number UPDATE Details (PUT REQUEST)---------------
 
 
 export const updateStudentEnrollment = async (req, res) => {

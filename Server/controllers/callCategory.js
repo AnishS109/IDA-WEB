@@ -74,3 +74,35 @@ export const callCategoryData = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+export const WillVisitedUpdateData = async (req, res) => {
+  console.log(req.body)
+  const { studentName, salesName, isVisited, visitDate } = req.body;
+
+  try {
+    // Find the student by their name and salesName (to ensure that only the correct user can update)
+    const student = await CallingStudentSchema.findOne({ Name: studentName, salesName });
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found or unauthorized' });
+    }
+
+    // Update the visit status and visit date
+    student.visited = isVisited;
+    student.visitDate = visitDate ? new Date(visitDate) : null; // Set the visit date, or null if not provided
+
+    // Save the updated student data
+    await student.save();
+
+    return res.status(200).json(student); // Return the updated student data as the response
+  } catch (error) {
+    console.error('Error while updating student visit status:', error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+
+
+
+

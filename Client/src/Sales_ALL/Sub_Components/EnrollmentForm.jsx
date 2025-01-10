@@ -18,6 +18,8 @@ import {
   Avatar,
   Modal,
   CircularProgress,
+  Dialog,
+  DialogTitle,
 } from "@mui/material";
 import axios from 'axios'
 import { DataContext } from '../../Context/DataProvider';
@@ -31,6 +33,7 @@ const EnrollmentForm = () => {
   const [onlinePayment, setOnlinePayment] = useState(false);
   const [paymentMode, setPaymentMode] = useState(false);
   const [studentID, setStudentID] = useState("");
+  const [SendingMail, setSendingMail] = useState(false);
 
   const [uploadingStudentImage, setUploadingImageStudent] = useState(false);
   const [uploadingDocumentImage, setUploadingImageDocument] = useState(false);
@@ -38,6 +41,7 @@ const EnrollmentForm = () => {
   const [staffType, setStaffType] = useState('');
   const [referenceType, setReferenceType] = useState('');
   const [leadSource, setLeadSource] = useState('');
+  const [successfulSubmit, setSuccessfulSubmit] = useState(null)
 
   const Navigate = useNavigate()
 
@@ -52,6 +56,13 @@ const EnrollmentForm = () => {
     status: "idle",
     message: "",
   });
+
+  // -------- Enrolled Student ko mail bhej rha hai --------
+
+  // const handleMailSend = async () => {
+
+  // };
+  
 
   // -------- student ID fetch kar rahe hain --------
   useEffect(() => {
@@ -285,6 +296,7 @@ const EnrollmentForm = () => {
   // -------- Form submit karne ka function --------
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSendingMail(true)
   
     let updatedFormData = { ...formData };
 
@@ -327,19 +339,49 @@ const EnrollmentForm = () => {
         );
   
         if (response.status === 200) {
-          Navigate("/Sales-Home")
           setConfirmedStudentDone(true)
+          setSuccessfulSubmit(true)
+
+          const mailResponse = {
+            name: formData.fullName,
+            email: formData.email,
+            courseEnrolled: formData.courseName,
+          };
+
+  
+          try {
+            const emailResponse = await axios.post(`${backendUrl}/Enrolled-Student-Mail-Send`, mailResponse);
+            setSendingMail(true)
+            if (emailResponse.status === 200) {
+
+            } else {
+              console.error("Error while sending mail:", emailResponse.data?.error || "Unknown error");
+              alert("Failed to send mail!");
+            }
+          } catch (emailError) {
+            console.error("Error while sending the mail:", emailError);
+            alert("An error occurred while sending the email.");
+          } finally{
+            handleMailCloseModal()
+          }
+
+          Navigate("/Sales-Home")
         }
       } catch (error) {
         console.log(
           "ERROR WHILE POSTING FORM DATA",
           error.response?.data?.message || error.message
-        );
+        ) 
       }
     } else {
       console.log("Student ID is not set");
     }
+    
   };
+
+  const handleMailCloseModal = () => {
+    setSendingMail(false)
+  }
   
 
   return (
@@ -353,7 +395,7 @@ const EnrollmentForm = () => {
         >
           Student Enrollment Form
         </Typography>
-        <form onSubmit={handleSubmit}>
+        <form >
 
           {/*--------------------------- Section 1: Personal Details ---------------------------*/}
 
@@ -921,6 +963,7 @@ const EnrollmentForm = () => {
               color="primary"
               type="submit"
               disabled={!formData.fullName || !formData.photo || !formData.courseName || !formData.leadSource}
+              onClick={handleSubmit}
             >
               Submit Enrollment Form
             </Button>
@@ -976,6 +1019,12 @@ const EnrollmentForm = () => {
           )}
         </Box>
       </Modal>
+
+      <Dialog open={SendingMail} onClose={handleMailCloseModal}>
+        <DialogTitle>
+          {`Enrolling ${formData.fullName} Please Wait...`}
+        </DialogTitle>
+      </Dialog>
 
       </Paper>
     </Container>

@@ -33,7 +33,7 @@ const FollowUps = () => {
     { label: 'FullName', key: 'FullName' },
     { label: 'Course Specialisation', key: 'Course Specialisation' },
     { label: 'Contact No.', key: 'Contact No.' },
-    { label: 'Fresh Call', key: 'Fresh Call' },
+    { label: 'Response 1', key: 'Response 1' },
     { label: 'Response 2', key: 'Response 2' },
     { label: 'Response 3', key: 'Response 3' },
     { label: 'Response 4', key: 'Response 4' },
@@ -169,7 +169,7 @@ const handleSearchChange = (e) => {
         </Box>
       ) : enquiryData.length === 0 ? (
         <Typography variant="h6" align="center" color="textSecondary">
-          No enquiries available.
+          No Follow ups available.
         </Typography>
       ) : (
         <Table sx={{ minWidth: 650 }} aria-label="simple table">

@@ -1,47 +1,63 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress,Typography } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
 
 const CallRejected = () => {
+  //------------------------- State Variables -------------------------
+  // CallRejectedData ke liye state variable
   const [callRejectedData, setCallRejectedData] = useState([]);
-  const [loading, setLoading] = useState(true);  // Added loading state
-  const { backendUrl, account } = useContext(DataContext);
 
+  // Loading spinner ke liye state variable
+  const [loading, setLoading] = useState(true);
+
+  // Context se backend URL aur account ka data
+  const { backendUrl, account } = useContext(DataContext);
+  //-------------------------
+
+  //------------------------- Data Fetching -------------------------
+  // Component mount hone par "Rejected Call" data fetch karna
   useEffect(() => {
     const fetchCallRejectedData = async () => {
-      const salesName = account.name;
+      const salesName = account.name; // Current user ka naam context se
       try {
-        // Fetch data from the API
+        // API se data fetch karna
         const response = await axios.get(`${backendUrl}/Call-Category-Data`, {
-          params: { salesName: account.name },  // Send salesName as query parameter
+          params: { salesName: account.name }, // Query parameter ke roop mein salesName bhejna
         });
 
-        // Filter data with "Rejected Call" category and update the state
+        // Filter karna "Rejected Call" category ka data
         const filteredData = response.data.filter((data) => data.category === "Rejected Call");
 
+        // Filtered data ko state mein set karna
         if (filteredData.length > 0) {
           setCallRejectedData(filteredData);
         } else {
-          setCallRejectedData([]);  // Set an empty array if no data
+          setCallRejectedData([]); // Agar data nahi mila toh empty array set karna
         }
       } catch (error) {
+        // Agar API call fail ho toh error console par show karna
         console.log("ERROR WHILE FETCHING CALL REJECTED DATA:", error);
       } finally {
-        setLoading(false);  // Set loading to false when the request is completed
+        // Loading spinner ko band karna jab request complete ho jaye
+        setLoading(false);
       }
     };
 
     fetchCallRejectedData();
-  }, [account.name, backendUrl]);  // Add backendUrl and account.name as dependencies
+  }, [account.name, backendUrl]); // Dependency array mein backendUrl aur account.name add karna
+  //-------------------------
 
   return (
     <Box>
-      {/* Show loading spinner if data is loading */}
+      {/*------------------------- Loader -------------------------*/}
+      {/* Agar loading true ho toh spinner dikhana */}
       {loading ? (
-        <CircularProgress />  // Loader will show when loading is true
+        <CircularProgress />
       ) : (
         <>
+          {/*------------------------- Data Rendering -------------------------*/}
+          {/* Agar callRejectedData mein items ho toh table dikhana */}
           {callRejectedData.length > 0 ? (
             <Table>
               <TableHead>
@@ -51,7 +67,7 @@ const CallRejected = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* Map over callRejectedData and display items with the "Rejected Call" category */}
+                {/* callRejectedData ko map karke table rows banana */}
                 {callRejectedData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
@@ -61,9 +77,10 @@ const CallRejected = () => {
               </TableBody>
             </Table>
           ) : (
-                        <Typography variant="h6" align="center" color="textSecondary">
-            No Data available.
-          </Typography>   // Display this if no data is available
+            // Agar data available na ho toh message dikhana
+            <Typography variant="h6" align="center" color="textSecondary">
+              No Data available.
+            </Typography>
           )}
         </>
       )}

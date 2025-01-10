@@ -1,48 +1,53 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress,Typography } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
 
 const JoinedOtherCoaching = () => {
-  const [JoinedOtherCoachingData, setJoinedOtherCoachingData] = useState([]);
-  const [loading, setLoading] = useState(true);  // Added loading state
-  const { backendUrl, account } = useContext(DataContext);
+  //------------------------- State Variables -------------------------
+  // Data for "Joined Other Institute" category
+  const [joinedOtherCoachingData, setJoinedOtherCoachingData] = useState([]);
+  const [loading, setLoading] = useState(true); // State for managing loading spinner
 
+  // Access backendUrl and account from DataContext
+  const { backendUrl, account } = useContext(DataContext);
+  //-------------------------
+
+  //------------------------- Data Fetching -------------------------
   useEffect(() => {
-    const fetchCallBackData = async () => {
-      const salesName = account.name;
+    const fetchJoinedOtherCoachingData = async () => {
       try {
-        // Fetch data from the API
+        // Fetch data from the backend API
         const response = await axios.get(`${backendUrl}/Call-Category-Data`, {
-          params: { salesName: account.name },  // Send salesName as query parameter
+          params: { salesName: account.name }, // Pass salesName as a query parameter
         });
 
-        // Filter data with "Rejected Call" category and update the state
+        // Filter data for "Joined Other Institute" category
         const filteredData = response.data.filter((data) => data.category === "Joined Other Institute");
 
-        if (filteredData.length > 0) {
-          setJoinedOtherCoachingData(filteredData);
-        } else {
-          setJoinedOtherCoachingData([]);  // Set an empty array if no data
-        }
+        // Set the state with the filtered data
+        setJoinedOtherCoachingData(filteredData.length > 0 ? filteredData : []);
       } catch (error) {
-        console.log("ERROR WHILE FETCHING CALL REJECTED DATA:", error);
+        console.error("ERROR WHILE FETCHING JOINED OTHER COACHING DATA:", error);
       } finally {
-        setLoading(false);  // Set loading to false when the request is completed
+        // Set loading state to false after request completion
+        setLoading(false);
       }
     };
 
-    fetchCallBackData();
-  }, [account.name, backendUrl]);  // Add backendUrl and account.name as dependencies
+    fetchJoinedOtherCoachingData();
+  }, [account.name, backendUrl]); // Dependencies to refetch data when necessary
+  //-------------------------
 
   return (
     <Box>
-      {/* Show loading spinner if data is loading */}
+      {/*------------------------- Loader -------------------------*/}
       {loading ? (
-        <CircularProgress />  // Loader will show when loading is true
+        <CircularProgress /> // Display a loader while data is being fetched
       ) : (
         <>
-          {JoinedOtherCoachingData.length > 0 ? (
+          {/*------------------------- Data Table -------------------------*/}
+          {joinedOtherCoachingData.length > 0 ? (
             <Table>
               <TableHead>
                 <TableRow>
@@ -51,8 +56,8 @@ const JoinedOtherCoaching = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* Map over callRejectedData and display items with the "Rejected Call" category */}
-                {JoinedOtherCoachingData.map((data, index) => (
+                {/* Map over the data and create table rows */}
+                {joinedOtherCoachingData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
                     <TableCell>{data.Mobile_No}</TableCell>
@@ -61,9 +66,10 @@ const JoinedOtherCoaching = () => {
               </TableBody>
             </Table>
           ) : (
-                        <Typography variant="h6" align="center" color="textSecondary">
-            No Data available.
-          </Typography>   // Display this if no data is available
+            // Display a message when no data is available
+            <Typography variant="h6" align="center" color="textSecondary">
+              No Data available.
+            </Typography>
           )}
         </>
       )}

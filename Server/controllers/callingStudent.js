@@ -52,17 +52,18 @@ export const fetchCallingStudentDetails = async (req, res) => {
     console.error("INTERNAL SERVER ERROR", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
-};
+}
+
 
 
 // ------------------ SET RESPONSE CALLING STUDENT (POST REQUEST) -------------------
 
 export const updateCallingDetails = async (req, res) => {
   const { fullName, ...otherDetails } = req.body;
-
+  
   try { 
     const callingData = await CallingStudentSchema.findOne({ Name: fullName });
-
+    
     if (callingData.salesName && callingData.salesName !== otherDetails.salesName) {
       return res.status(403).json({ 
         message: `You are not authorized to update responses for ${fullName}` 
@@ -85,3 +86,58 @@ export const updateCallingDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+  // ------------------ DELLETING CALLING STUDENT (POST REQUEST) -------------------
+
+  export const deleteCallingStudentDetails = async (req, res) => {
+    const { salesName, fullName } = req.body;
+  
+    try {
+      // Use findOneAndDelete to delete and get the deleted document
+      const deletedEnquiry = await CallingStudentSchema.findOneAndDelete({ fullName });
+      
+      if (!deletedEnquiry) {
+        return res.status(404).json({ message: "Student not found or already deleted." });
+      }
+      
+      return res.status(200).json({
+        message: "Student deleted successfully.",
+        deletedData: deletedEnquiry, // Include the deleted document in the response if needed
+      });
+    } catch (error) {
+      console.error("INTERNAL SERVER ERROR", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  
+
+
+  export const CallBackData = () => async (req, res) => {
+    console.log(req.body); // Log the request body to ensure data is received
+    const { studentName, salesName, visitDate, visitTime } = req.body;
+  
+    try {
+      // Convert visitDate from string to Date object
+      const visitDateObj = new Date(visitDate);
+  
+      // Find the student by their Name and salesName (to ensure proper authorization)
+      const student = await CallingStudentSchema.findOne({ Name: studentName, salesName });
+  
+      if (!student) {
+        return res.status(404).json({ message: 'Student not found or unauthorized' });
+      }
+  
+      // Update the callback visit date and time
+      student.CallBackvisitDate = visitDateObj;  // Updated to the Date object
+      student.visitTime = visitTime;              // Assuming visitTime is passed as a string (e.g., '14:30')
+  
+      // Save the updated student data
+      await student.save();
+  
+      return res.status(200).json(student);
+    } catch (error) {
+      console.error('Error while updating callback details:', error);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };

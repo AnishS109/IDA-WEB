@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom
 import DataProvider, { DataContext } from "./Context/DataProvider";
 import Loader from "./components/Loader";
 import EnrollmentForm from "./Sales_ALL/Sub_Components/EnrollmentForm.jsx";
+import AddEnquiry from "./Sales_ALL/components/AddEnquiry.jsx";
+import ScrollToTopOnRouteChange from "./ScrollToTop.jsx";
 
 // Lazy-loaded components
 const Home = lazy(() => import("./Pages/Home"));
@@ -23,30 +25,31 @@ const App = () => {
   return (
     <DataProvider>
       <BrowserRouter>
+        {/* Place ScrollToTopOnRouteChange inside BrowserRouter */}
+        <ScrollToTopOnRouteChange />
         <Suspense fallback={<Loader />}>
           <Routes>
             {/* ------------ PUBLIC ROUTES ------------ */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/enrollment-form" element={<EnrollmentForm />} />
 
             {/* ------------ PRIVATE ROUTES ------------ */}
 
             <Route element={<PrivateRoutes />}>
-
               {/* ------------ FOR ADMIN ------------ */}
               <Route path="/Admin-Home" element={<AdminHome />} />
 
               {/* ------------ FOR SALES ------------ */}
               <Route path="/Sales-Home" element={<SalesHome />} />
+              <Route path="/enrollment-form" element={<EnrollmentForm />} />
+              <Route path="/enquiry-form" element={<AddEnquiry />} />
 
               {/* ------------ FOR FACULTY ------------ */}
               <Route path="/Faculty-Home" element={<FacultyHome />} />
 
               {/* ------------ FOR HR ------------ */}
               <Route path="/HR-Home" element={<HrHome />} />
-
             </Route>
 
           </Routes>

@@ -8,8 +8,9 @@ import { getImage, UploadImage } from "../controllers/ImageController.js"
 import { fetchEnrolledStudentDetails, postEnrolledStudent } from "../controllers/enrolledStudent.js"
 import { getCurrentStudentId, updateStudentEnrollment,  } from "../controllers/studentEnrollmentNumber.js"
 import uploadimg from "../utils/uploadimg.js"
-import { fetchCallingStudentDetails, updateCallingDetails } from "../controllers/callingStudent.js"
-import { callCategoryData } from "../controllers/callCategory.js"
+import { deleteCallingStudentDetails, fetchCallingStudentDetails, updateCallingDetails, CallBackData } from "../controllers/callingStudent.js"
+import { callCategoryData, WillVisitedUpdateData} from "../controllers/callCategory.js"
+import mailSender from "../controllers/mailSender.js"
 
 const router = express.Router()
 
@@ -42,13 +43,15 @@ router.get("/enrolled-student-details/:salesName", fetchEnrolledStudentDetails)
 router.post("/Student-Enrolled-Details", postEnrolledStudent);
 router.get("/Student-Enrolled-Number", getCurrentStudentId);
 router.put("/Student-Enrolled-Details-Update", updateStudentEnrollment);
+router.post("/Enrolled-Student-Mail-Send", mailSender());
 
 router.get("/calling-student-details",fetchCallingStudentDetails)
 router.put("/calling-student-update-details",updateCallingDetails)
-
-
+router.post("/calling-will-visited-update-details",WillVisitedUpdateData)
+router.post("/calling-callback-updates",CallBackData)
 
 router.get("/Call-Category-Data", callCategoryData);
+router.delete("/Call-Deleting-Data", deleteCallingStudentDetails);
 
 
 

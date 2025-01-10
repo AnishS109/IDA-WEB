@@ -1,48 +1,46 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress,Typography } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
 
 const NotRequiredAnyCourse = () => {
-  const [NotRequiredAnyCourseData, setNotRequiredAnyCourseData] = useState([]);
-  const [loading, setLoading] = useState(true);  // Added loading state
-  const { backendUrl, account } = useContext(DataContext);
+  const [notRequiredAnyCourseData, setNotRequiredAnyCourseData] = useState([]);
+  const [loading, setLoading] = useState(true);  // State to track loading
+  const { backendUrl, account } = useContext(DataContext);  // Access backend URL and account info from context
 
+  // Fetch data when component mounts or when account name/backend URL changes
   useEffect(() => {
     const fetchNotRequiredAnyCourseData = async () => {
-      const salesName = account.name;
       try {
-        // Fetch data from the API
+        // Send request to fetch data based on salesName
         const response = await axios.get(`${backendUrl}/Call-Category-Data`, {
-          params: { salesName: account.name },  // Send salesName as query parameter
+          params: { salesName: account.name },  // Include salesName in query params
         });
 
-        // Filter data with "Rejected Call" category and update the state
+        // Filter data for "Not Require Any Course" category
         const filteredData = response.data.filter((data) => data.category === "Not Require Any Course");
 
-        if (filteredData.length > 0) {
-          setNotRequiredAnyCourseData(filteredData);
-        } else {
-          setNotRequiredAnyCourseData([]);  // Set an empty array if no data
-        }
+        // Set filtered data or empty array if no data found
+        setNotRequiredAnyCourseData(filteredData.length > 0 ? filteredData : []);
       } catch (error) {
-        console.log("ERROR WHILE FETCHING CALL REJECTED DATA:", error);
+        console.error("Error fetching Not Required Any Course data:", error);
       } finally {
-        setLoading(false);  // Set loading to false when the request is completed
+        setLoading(false);  // Set loading to false after data fetching
       }
     };
 
     fetchNotRequiredAnyCourseData();
-  }, [account.name, backendUrl]);  // Add backendUrl and account.name as dependencies
+  }, [account.name, backendUrl]);  // Dependencies to trigger effect when they change
 
   return (
     <Box>
-      {/* Show loading spinner if data is loading */}
+      {/* Show loading spinner while data is being fetched */}
       {loading ? (
-        <CircularProgress />  // Loader will show when loading is true
+        <CircularProgress />
       ) : (
         <>
-          {NotRequiredAnyCourseData.length > 0 ? (
+          {/* Render data if available */}
+          {notRequiredAnyCourseData.length > 0 ? (
             <Table>
               <TableHead>
                 <TableRow>
@@ -51,8 +49,8 @@ const NotRequiredAnyCourse = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* Map over callRejectedData and display items with the "Rejected Call" category */}
-                {NotRequiredAnyCourseData.map((data, index) => (
+                {/* Map through the filtered data and render rows */}
+                {notRequiredAnyCourseData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
                     <TableCell>{data.Mobile_No}</TableCell>
@@ -61,9 +59,10 @@ const NotRequiredAnyCourse = () => {
               </TableBody>
             </Table>
           ) : (
-                        <Typography variant="h6" align="center" color="textSecondary">
-            No Data available.
-          </Typography>   // Display this if no data is available
+            // Display message if no data is found
+            <Typography variant="h6" align="center" color="textSecondary">
+              No Data available.
+            </Typography>
           )}
         </>
       )}

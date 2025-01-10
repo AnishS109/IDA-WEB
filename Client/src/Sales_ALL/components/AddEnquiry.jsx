@@ -1,5 +1,4 @@
 import React, { useReducer, useState, useContext } from 'react';
-import Layout from '../../Layout/Layout';
 import {
   Box,
   TextField,
@@ -23,6 +22,7 @@ import axios from "axios";
 import { DataContext } from '../../Context/DataProvider';
 
 const AddEnquiry = () => {
+  //------------------ State Variables ------------------
   const [leadCategory, setLeadCategory] = useState('');
   const [educationLevel, setEducationLevel] = useState('');
   const [leadSource, setLeadSource] = useState('');
@@ -32,21 +32,22 @@ const AddEnquiry = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [modalTitle, setModalTitle] = useState('');
 
-  const { backendUrl, account } = useContext(DataContext);
+  const { backendUrl, account, CallingStudentname , setCallingStudentName } = useContext(DataContext);
 
+  //------------------ Reducer for Form State ------------------
   const reducer = (state, action) => {
     if (action.type === 'SET_FORM') {
       const { name, value } = action.payload;
-      return { ...state, [name]: value }; 
+      return { ...state, [name]: value }; // Form state update
     }
   
     if (action.type === 'RESET_FORM') {
-      return initialState;
+      return initialState; // Reset form to initial state
     }
     return state;
   };
-  
 
+  //------------------ Initial State ------------------
   const initialState = {
     fullName: '',
     contact_no: '',
@@ -67,38 +68,62 @@ const AddEnquiry = () => {
     staffType: staffType,
     studentName: "",
     staffName: "",
-    salesName:account.name,
-    postPassingYear:""
+    salesName: account.name,
+    postPassingYear:"",
   };
 
+  //------------------ UseReducer Hook ------------------
   const [state, dispatchState] = useReducer(reducer, initialState);
 
+  //------------------ Handle Input Change ------------------
   const handleChange = (e) => {
     const { name, value } = e.target;
-    dispatchState({ type: 'SET_FORM', payload: { name, value } });
+    dispatchState({ type: 'SET_FORM', payload: { name, value } }); // Update form state
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(state);
+  //------------------ Delete Calling Data ------------------
+  const DeleteCallingData = async () => {
+    const DATA = {
+      salesName: account.name,
+      fullName: CallingStudentname,
+    };
+
+    console.log(DATA) // Check data before sending
+
     try {
-      const response = await axios.post(`${backendUrl}/addEnquiryDetails`, state);
+      // API request to delete the calling data
+      const response = await axios.delete(`${backendUrl}/Call-Deleting-Data`, { data: DATA });
+    } catch (error) {
+      console.log("ERROR WHILE DELETING THE DATA:", error);
+    } finally {
+      setCallingStudentName(""); // Clear the calling student name after deletion
+    }
+  };
+
+  //------------------ Handle Form Submission ------------------
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent form default action
+
+    try {
+      const response = await axios.post(`${backendUrl}/addEnquiryDetails`, state); // Post enquiry data to backend
       if (response.status === 200) {
+        DeleteCallingData(); // Delete calling data after successful submission
         setModalTitle("Success");
-        setModalMessage("Successfully Submitted!");
+        setModalMessage("Successfully Submitted!"); // Success message
         setModalOpen(true);
         dispatchState({ type: 'RESET_FORM' }); // Reset form after success
       }
     } catch (error) {
       setModalTitle("Error");
-      setModalMessage(error.response.data.message);
+      setModalMessage(error.response.data.message); // Error message
       setModalOpen(true);
       console.error("Error while submitting add-Enquiry Details", error);
     }
   };
 
+  //------------------ Handle Modal Close ------------------
   const handleCloseModal = () => {
-    setModalOpen(false);
+    setModalOpen(false); // Close the modal
   };
 
   return (

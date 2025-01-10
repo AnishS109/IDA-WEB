@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
+import { NavLink } from "react-router-dom";
 import { DataContext } from '../../Context/DataProvider';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, Pagination, TextField, CircularProgress, Box, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, Snackbar, Alert} from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, Pagination, TextField, CircularProgress, Box, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, Snackbar, Alert } from '@mui/material';
 
 const Calling = () => {
 
+  //------------------------- State Variables -------------------------
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [selectedResponseIndex, setSelectedResponseIndex] = useState(null);
   const [responseValue, setResponseValue] = useState('');
@@ -12,19 +14,19 @@ const Calling = () => {
   const [saving, setSaving] = useState(false);  
   const [messageModal, setMessageModal] = useState({ open: false, message: '', severity: 'success' });
 
-
   const [callingStudentDetails, setCallingStudentDetails] = useState([]);
   const [page, setPage] = useState(1); 
-  const [limit] = useState(50); 
+  const [limit] = useState(100); 
   const [totalPages, setTotalPages] = useState(0); 
   const [totalItems, setTotalItems] = useState(0); 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');  
   const [loading, setLoading] = useState(false); 
 
-  const { backendUrl, account } = useContext(DataContext);
+  const { backendUrl, account, setCallingStudentName } = useContext(DataContext);
+  //-------------------------------------------------------------------
 
+  //------------------------- Modal Handlers -------------------------
   const handleCancel = () => setModalOpen(false);
-
   const handleCloseMessageModal = () => setMessageModal({ ...messageModal, open: false });
 
   const handleResponseClick = (enquiry, responseIndex) => {
@@ -33,14 +35,16 @@ const Calling = () => {
     setResponseValue('');
     setModalOpen(true);
   };
+  //-------------------------------------------------------------------
 
-  const handleCallingResponse = async() => {
+  //------------------------- Response Update Handler -------------------------
+  const handleCallingResponse = async () => {
     const responseData = {
       fullName: selectedEnquiry.Name,
       [`response${selectedResponseIndex + 1}`]: `${responseValue} (By ${account.name})`,
-      salesName:account.name
+      salesName: account.name
     };
-    console.log("Response jaa rha hai:",responseData)
+
     try {
       setSaving(true);  
       const response = await axios.put(`${backendUrl}/calling-student-update-details`, responseData);
@@ -52,14 +56,15 @@ const Calling = () => {
       setSaving(false);  
       setModalOpen(false);
     }
-  }
+  };
+  //-------------------------------------------------------------------
 
-  // Fetching data from backend (supports both pagination and search)
-  const fetchCallingStudentData = async (page, searchTerm = '') => {
+  //------------------------- Data Fetch Handler -------------------------
+  const fetchCallingStudentData = async (page) => {
     try {
       setLoading(true); 
       const response = await axios.get(`${backendUrl}/calling-student-details`, {
-        params: { page, limit, searchTerm }, 
+        params: { page, limit }, 
       });
 
       if (response.status === 200) {
@@ -73,24 +78,45 @@ const Calling = () => {
       setLoading(false);  
     }
   };
+  //------------------------------------------------------------------
 
-  // Fetch data when page or search term changes
+  //------------------------- Effects and Event Handlers -------------------------
   useEffect(() => {
-    fetchCallingStudentData(page, searchTerm);
-  }, [backendUrl, page, searchTerm]);
+    fetchCallingStudentData(page);
+  }, [backendUrl, page]);
 
+  // Page change handler
   const handlePageChange = (event, value) => {
-    setPage(value); 
+    setPage(value);
   };
 
+  // Search input change handler
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value); 
-    setPage(1); 
+    const searchValue = e.target.value.toUpperCase(); // Convert search term to uppercase
+    setSearchTerm(searchValue);
+    setPage(1);  // Reset to first page when search term changes
   };
+  //-------------------------------------------------------------------
+
+  // Client-side filtering based on the search term
+// Client-side filtering based on the search term
+const filteredData = callingStudentDetails.filter((enquiry) => {
+  // Ensure Name is not null or undefined before applying toUpperCase()
+  const studentName = enquiry.Name ? enquiry.Name.toUpperCase() : ''; 
+  const searchTermUpper = searchTerm.toUpperCase();
+
+  // Filter by name or by any response field (also ensure response is not null)
+  const responses = Object.keys(enquiry)
+    .filter(key => key.startsWith('response'))
+    .map(key => (enquiry[key] ? enquiry[key].toUpperCase() : ''));
+
+  return studentName.includes(searchTermUpper) || responses.some(response => response.includes(searchTermUpper));
+});
+
 
   return (
     <div>
-      {/* Search Bar */}
+      {/*-------------- Search Bar --------------*/}
       <TextField
         label="Search by Name or Responses"
         variant="outlined"
@@ -99,21 +125,22 @@ const Calling = () => {
         sx={{ marginBottom: 2, width: '100%' }}
       />
 
+      {/*-------------- Loading and Table Content --------------*/}
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" height="300px">
           <CircularProgress />
         </Box>
-      ) : callingStudentDetails.length === 0 ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
-          <Typography variant="h6">No Data Found</Typography>
-        </Box>
+      ) : filteredData.length === 0 ? (
+        <Typography variant="h6" align="center" color="textSecondary">
+          No Calling Data available.
+        </Typography>
       ) : (
         <>
+          {/*-------------- Table to Display Data --------------*/}
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell align="center"><b>Name</b></TableCell>
-                <TableCell align="center"><b>DOB</b></TableCell>
                 <TableCell align="center"><b>Mobile No</b></TableCell>
                 {Array.from({ length: 8 }).map((_, idx) => (
                   <TableCell key={idx} align="center">
@@ -124,64 +151,64 @@ const Calling = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {callingStudentDetails
-                .filter(enquiry => enquiry.Name) // Ensure Name exists
-                .map((enquiry, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="center">{enquiry.Name}</TableCell>
-                    <TableCell align="center">{enquiry.DOB}</TableCell>
-                    <TableCell align="center">{enquiry.Mobile_No}</TableCell>
-                    {Array.from({ length: 8 }).map((_, idx) => {
-                      const responseKey = `response${idx + 1}`;
-                      return (
-                        <TableCell key={idx} align="center">
-                          {enquiry[responseKey] ? (
-                            <Typography>{enquiry[responseKey]}</Typography>
-                          ) : (
-                            <Button
-                              variant="outlined"
-                              color="primary"
-                              size="small"
-                              sx={{
-                                textTransform: 'none',
-                                "&:hover": {
-                                  backgroundColor: "primary.main",
-                                  color: "white",
-                                  borderColor: "transparent",
-                                },
-                              }}
-                              onClick={() => handleResponseClick(enquiry, idx)}
-                            >
-                              Response
-                            </Button>
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                    <TableCell align="center">
-                      <Button
-                        variant="contained"
-                        color="success"
-                        size="small"
-                        sx={{
-                          border: "1px solid transparent",
-                          textTransform: "none",
-                          "&:hover": {
-                            backgroundColor: "transparent",
-                            color: "success.main",
-                            borderColor: "success.main",
-                          },
-                        }}
-                      >
-                        Enquiry
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {filteredData.map((enquiry, index) => (
+                <TableRow key={index}>
+                  <TableCell align="center">{enquiry.Name}</TableCell>
+                  <TableCell align="center">{enquiry.Mobile_No}</TableCell>
+                  {Array.from({ length: 8 }).map((_, idx) => {
+                    const responseKey = `response${idx + 1}`;
+                    return (
+                      <TableCell key={idx} align="center">
+                        {enquiry[responseKey] ? (
+                          <Typography>{enquiry[responseKey]}</Typography>
+                        ) : (
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            size="small"
+                            sx={{
+                              textTransform: 'none',
+                              "&:hover": {
+                                backgroundColor: "primary.main",
+                                color: "white",
+                                borderColor: "transparent",
+                              },
+                            }}
+                            onClick={() => handleResponseClick(enquiry, idx)}
+                          >
+                            Response
+                          </Button>
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                  <TableCell align="center">
+                    <NavLink to="/enquiry-form">
+                    <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      sx={{
+                        border: "1px solid transparent",
+                        textTransform: "none",
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                          color: "success.main",
+                          borderColor: "success.main",
+                        },
+                      }}
+                      onClick={() => setCallingStudentName(enquiry.Name)}
+                    >
+                      Enquiry
+                    </Button>
+                    </NavLink>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
 
-          {/* Pagination Control */}
+          {/*----------- Pagination Control -------------*/}
           <Pagination
             count={totalPages}
             page={page}
@@ -194,8 +221,7 @@ const Calling = () => {
         </>
       )}
 
-      {/*------------- Response update modal --------------------*/}
-
+      {/*------------- Response Update Modal --------------*/}
       <Dialog open={modalOpen} onClose={handleCancel}>
         <DialogTitle>Update Response</DialogTitle>
         <DialogContent>
@@ -217,33 +243,37 @@ const Calling = () => {
               <MenuItem value="Not Require Any Course">Not Require Any Course</MenuItem>
               <MenuItem value="Call Back">Call Back</MenuItem>
               <MenuItem value="Call Rejected In Between">Call Rejected In Between</MenuItem>
-              <MenuItem value="Joined Other Institute">Joined Other Institute</MenuItem>
+              <MenuItem value="Appointment Scheduled">Appointment Scheduled</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleCallingResponse} color="primary" disabled={!responseValue || saving}>
-            {saving ? <CircularProgress size={20} sx={{ color: 'inherit' }} /> : 'Confirm'}
+          <Button onClick={handleCancel} color="primary" variant="contained">Cancel</Button>
+          <Button
+            disabled={!responseValue || saving}
+            onClick={handleCallingResponse}
+            color="primary"
+            variant="contained"
+          >
+            {saving ? <CircularProgress size={20} /> : 'Save'}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/*-------------------- Snackbar for messages ---------------------*/}
-      
+      {/*------------- Snackbar for Success/Error Messages --------------*/}
       <Snackbar
         open={messageModal.open}
-        autoHideDuration={3000}
+        autoHideDuration={6000}
         onClose={handleCloseMessageModal}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseMessageModal} severity={messageModal.severity} sx={{ width:'100%' }}>
+        <Alert
+          onClose={handleCloseMessageModal}
+          severity={messageModal.severity}
+          sx={{ width: '100%' }}
+        >
           {messageModal.message}
         </Alert>
       </Snackbar>
-
     </div>
   );
 };

@@ -4,54 +4,51 @@ import axios from 'axios';
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
 
 const CallBack = () => {
-  const [CallBackData, setCallBackData] = useState([]);
-  const [loading, setLoading] = useState(true);  // Added loading state
-  const { backendUrl, account } = useContext(DataContext);
+  const [CallBackData, setCallBackData] = useState([]);  // State to hold the callback data
+  const [loading, setLoading] = useState(true);          // State for loading status
+  const { backendUrl, account } = useContext(DataContext);  // Fetching data from context (backend URL & user account)
 
+  //------------------------- Data Fetching -------------------------
   useEffect(() => {
     const fetchCallBackData = async () => {
       const salesName = account.name;
       try {
-        // Fetch data from the API
         const response = await axios.get(`${backendUrl}/Call-Category-Data`, {
-          params: { salesName: account.name },  // Send salesName as query parameter
+          params: { salesName: account.name },
         });
 
-        // Filter data with "Rejected Call" category and update the state
+        // Filter data by "Call Back" category
         const filteredData = response.data.filter((data) => data.category === "Call Back");
 
-        if (filteredData.length > 0) {
-          setCallBackData(filteredData);
-        } else {
-          setCallBackData([]);  // Set an empty array if no data
-        }
+        setCallBackData(filteredData.length > 0 ? filteredData : []); // Update state with fetched data
       } catch (error) {
-        console.log("ERROR WHILE FETCHING CALL REJECTED DATA:", error);
+        console.log("ERROR WHILE FETCHING CALL BACK DATA:", error);
       } finally {
-        setLoading(false);  // Set loading to false when the request is completed
+        setLoading(false); // Set loading to false when data fetching is complete
       }
     };
 
-    fetchCallBackData();
-  }, [account.name, backendUrl]);  // Add backendUrl and account.name as dependencies
+    fetchCallBackData();  // Fetch callback data when component mounts
+  }, [account.name, backendUrl]);
 
+  //------------------------- Return JSX -------------------------
   return (
     <Box>
-      {/* Show loading spinner if data is loading */}
+      {/* Show loading spinner if data is being fetched */}
       {loading ? (
-        <CircularProgress />  // Loader will show when loading is true
+        <CircularProgress />
       ) : (
         <>
           {CallBackData.length > 0 ? (
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Student Name</TableCell>
-                  <TableCell>Mobile Number</TableCell>
+                  <TableCell><b>Student Name</b></TableCell>
+                  <TableCell><b>Mobile Number</b></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* Map over callRejectedData and display items with the "Rejected Call" category */}
+                {/* Loop through each callback data */}
                 {CallBackData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
@@ -62,8 +59,8 @@ const CallBack = () => {
             </Table>
           ) : (
             <Typography variant="h6" align="center" color="textSecondary">
-            No Data available.
-          </Typography>   // Display this if no data is available
+              No Data available.
+            </Typography>
           )}
         </>
       )}

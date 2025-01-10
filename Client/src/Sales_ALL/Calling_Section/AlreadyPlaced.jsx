@@ -4,44 +4,50 @@ import axios from 'axios';
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
 
 const AlreadyPlaced = () => {
+  //------------------------- State Variables -------------------------
   const [AlreadyPlacedData, setAlreadyPlacedData] = useState([]);
-  const [loading, setLoading] = useState(true);  // Added loading state
+
+  const [loading, setLoading] = useState(true);
+
   const { backendUrl, account } = useContext(DataContext);
+
+  //------------------------- Data Fetching -------------------------
 
   useEffect(() => {
     const fetchAlreadyPlacedData = async () => {
-      const salesName = account.name;
+      const salesName = account.name; 
       try {
-        // Fetch data from the API
         const response = await axios.get(`${backendUrl}/Call-Category-Data`, {
-          params: { salesName: account.name },  // Send salesName as query parameter
+          params: { salesName: account.name }, 
         });
 
-        // Filter data with "Rejected Call" category and update the state
         const filteredData = response.data.filter((data) => data.category === "Already Placed");
 
         if (filteredData.length > 0) {
           setAlreadyPlacedData(filteredData);
         } else {
-          setAlreadyPlacedData([]);  // Set an empty array if no data
+          setAlreadyPlacedData([]); 
         }
       } catch (error) {
         console.log("ERROR WHILE FETCHING CALL REJECTED DATA:", error);
       } finally {
-        setLoading(false);  // Set loading to false when the request is completed
+        setLoading(false);
       }
     };
 
     fetchAlreadyPlacedData();
-  }, [account.name, backendUrl]);  // Add backendUrl and account.name as dependencies
+  }, [account.name, backendUrl]);
 
   return (
     <Box>
-      {/* Show loading spinner if data is loading */}
+      {/*------------------------- Loader -------------------------*/}
+
       {loading ? (
-        <CircularProgress />  // Loader will show when loading is true
+        <CircularProgress />
       ) : (
         <>
+          {/*------------------------- Data Rendering -------------------------*/}
+
           {AlreadyPlacedData.length > 0 ? (
             <Table>
               <TableHead>
@@ -51,7 +57,7 @@ const AlreadyPlaced = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* Map over callRejectedData and display items with the "Rejected Call" category */}
+
                 {AlreadyPlacedData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
@@ -61,9 +67,10 @@ const AlreadyPlaced = () => {
               </TableBody>
             </Table>
           ) : (
+
             <Typography variant="h6" align="center" color="textSecondary">
-            No Data available.
-          </Typography>  // Display this if no data is available
+              No Data available.
+            </Typography>
           )}
         </>
       )}

@@ -66,18 +66,14 @@ const EnrolledStudent = () => {
           
           {/* Render Filtered Students */}
 
-          {filteredStudents.map((student) => (
-            <EnrolledStudentCard key={student.id} student={student} />
+          {filteredStudents.map((student,index) => (
+            <EnrolledStudentCard key={index} student={student} />
           ))}
         </Grid>
       ) : (
-        <Typography
-          variant="h6"
-          component="p"
-          sx={{ textAlign: "center", marginTop: 4 }}
-        >
-          No Enrolled Student Data is found.
-        </Typography>
+            <Typography variant="h6" align="center" color="textSecondary">
+              No Enrolled Student Data available.
+            </Typography>
       )}
     </Box>
   );

@@ -1,23 +1,34 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from "axios";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress, Typography, Box, TextField } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  CircularProgress,
+  Typography,
+  Box,
+  TextField,
+} from '@mui/material';
 import { DataContext } from "../../Context/DataProvider";
 import { NavLink } from "react-router-dom";
 
 const Confirmed = () => {
-  const { backendUrl, account, confirmedStudentDone } = useContext(DataContext);
+  const { backendUrl, account, confirmedStudentDone, setConfirmedStudentDone } = useContext(DataContext);
   const [confirmStudentDetails, setConfirmStudentDetails] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
   const [filteredStudentDetails, setFilteredStudentDetails] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Initialize confirmedStudent state from session storage
   const [confirmedStudent, setConfirmedStudent] = useState(() => {
     const savedStudent = sessionStorage.getItem("confirmedStudent");
     return savedStudent ? JSON.parse(savedStudent) : null;
   });
 
-  // Store confirmedStudent in session storage when it changes
   useEffect(() => {
     sessionStorage.setItem("confirmedStudent", JSON.stringify(confirmedStudent));
   }, [confirmedStudent]);
@@ -28,10 +39,13 @@ const Confirmed = () => {
       setLoading(true);
       try {
         const response = await axios.get(`${backendUrl}/Confirmed_Student_Details/${account.name}`);
-        setConfirmStudentDetails(response.data);
-        setFilteredStudentDetails(response.data);
+        const studentData = response.data || []; // Ensure it defaults to an array
+        setConfirmStudentDetails(studentData);
+        setFilteredStudentDetails(studentData);
       } catch (error) {
         console.error('ERROR WHILE FETCHING CONFIRMED STUDENT DETAILS', error);
+        setConfirmStudentDetails([]); // Fallback to empty array in case of an error
+        setFilteredStudentDetails([]);
       } finally {
         setLoading(false);
       }
@@ -39,42 +53,39 @@ const Confirmed = () => {
     fetchConfirmedStudent();
   }, [backendUrl, account.name]);
 
-  // Delete confirmed student details if conditions are met
   useEffect(() => {
     const deleteConfirmStudentDetails = async () => {
       if (confirmedStudentDone && confirmedStudent) {
         const reqData = { salesName: account.name, fullName: confirmedStudent };
 
         try {
-          const response = await axios.delete(`${backendUrl}/confirm-student-details-delete`, { data: reqData });
-          console.log("Deleted successfully:", response.data);
+          await axios.delete(`${backendUrl}/confirm-student-details-delete`, { data: reqData });
 
-          // Optionally refresh the confirmedStudentDetails list
           setConfirmStudentDetails((prevDetails) =>
             prevDetails.filter((student) => student.fullName !== confirmedStudent)
           );
 
-          // Clear the confirmed student from state and session storage
           setConfirmedStudent(null);
         } catch (error) {
-          console.log("ERROR WHILE DELETING CONFIRMED DETAILS", error);
+          console.error("ERROR WHILE DELETING CONFIRMED DETAILS", error);
+        } finally {
+          setConfirmedStudentDone(false);
         }
       }
     };
 
     deleteConfirmStudentDetails();
-  }, [confirmedStudentDone]);
+  }, [confirmedStudentDone, confirmedStudent, account.name]);
 
   const handleSearchChange = (e) => {
     const searchValue = e.target.value;
     setSearchTerm(searchValue);
 
     if (searchValue === "") {
-      setFilteredStudentDetails(confirmStudentDetails); // Reset to original data if search is empty
+      setFilteredStudentDetails(confirmStudentDetails); 
     } else {
-      // Filter students based on the search term
       const filtered = confirmStudentDetails.filter((student) =>
-        student.fullName.toLowerCase().includes(searchValue.toLowerCase())
+        student.fullName?.toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredStudentDetails(filtered);
     }
@@ -82,20 +93,17 @@ const Confirmed = () => {
 
   return (
     <>
+      <Box sx={{ padding: 2 }}>
+        <TextField
+          label="Search by Name"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          sx={{ marginBottom: 2, width: "100%" }}
+        />
+      </Box>
 
-    <Box sx={{ padding: 2 }}>
-
-     <TextField
-      label="Search by Name"
-      variant="outlined"
-      value={searchTerm}
-      onChange={handleSearchChange}
-      sx={{ marginBottom: 2, width: "100%" }}
-     />
-
-    </Box>
-
-    {loading ? (
+      {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
           <CircularProgress />
         </div>

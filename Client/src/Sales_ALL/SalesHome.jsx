@@ -5,6 +5,7 @@ import Layout from "../Layout/Layout";
 import FollowUps from "./components/FollowUps";
 import Calling from "./components/Calling";
 import Confirmed from "./components/Confirmed";
+import WillVisit from "./Calling_Section/WillVisit"
 
 import AddIcon from "@mui/icons-material/Add";
 import LoopIcon from "@mui/icons-material/Loop";
@@ -12,6 +13,9 @@ import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import SchoolIcon from '@mui/icons-material/School';
 import EnrolledStudent from "./components/EnrolledStudent";
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
+import CallBack from "./Calling_Section/CallBack";
 
 const SalesHome = () => {
 
@@ -29,7 +33,9 @@ const SalesHome = () => {
     { label: "Follow-Ups", icon: <LoopIcon />, key: "Follow-Ups" },
     { label: "Calling", icon: <PhoneInTalkIcon />, key: "Calling" },
     { label: "Confirmed", icon: <CheckCircleOutlineIcon />, key: "Confirmed" },
-    { label: "Enrolled Student", icon: <SchoolIcon />, key: "Enrolled Student" }
+    { label: "Enrolled Student", icon: <SchoolIcon />, key: "Enrolled Student" },
+    { label: "Will Visit", icon: <DirectionsCarIcon />, key: "Will Visit" },
+    { label: "Call Back", icon: <PhoneCallbackIcon />, key: "Call Back" },
   ];
 
   const Content = () => {
@@ -47,6 +53,12 @@ const SalesHome = () => {
     }
     else if (selectedOption === "Enrolled Student") {
       return <EnrolledStudent />;
+    }
+    else if (selectedOption === "Will Visit") {
+      return <WillVisit />;
+    }
+    else if (selectedOption === "Call Back") {
+      return <CallBack />;
     }
   };
 
