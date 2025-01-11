@@ -98,10 +98,7 @@ const Calling = () => {
   };
   //-------------------------------------------------------------------
 
-  // Client-side filtering based on the search term
-// Client-side filtering based on the search term
 const filteredData = callingStudentDetails.filter((enquiry) => {
-  // Ensure Name is not null or undefined before applying toUpperCase()
   const studentName = enquiry.Name ? enquiry.Name.toUpperCase() : ''; 
   const searchTermUpper = searchTerm.toUpperCase();
 

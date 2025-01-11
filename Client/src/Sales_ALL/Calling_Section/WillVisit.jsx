@@ -2,11 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography, Checkbox, FormControlLabel, TextField, Button } from '@mui/material';
+import { NavLink } from 'react-router-dom';
 
 const WillVist = () => {
   const [WillVistData, setWillVistData] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state for the API call
-  const { backendUrl, account } = useContext(DataContext);
+  const { backendUrl, account, setCallingStudentName } = useContext(DataContext);
 
   // Function to handle the checkbox change and update the visited status
   const handleVisitedChange = (studentName, isVisited, index) => {
@@ -90,7 +91,8 @@ const WillVist = () => {
                   <TableCell><b>Mobile Number</b></TableCell>
                   <TableCell><b>Date</b></TableCell>
                   <TableCell><b>Visited?</b></TableCell>
-                  <TableCell><b>Confirm</b></TableCell>
+                  <TableCell><b>Changes</b></TableCell>
+                  <TableCell><b>Enquiry</b></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -130,11 +132,35 @@ const WillVist = () => {
                       <Button
                         variant="contained"
                         color="primary"
+                        size='small'
                         onClick={() => handleConfirmUpdate(data.Name, data.visitDate, data.visited, index)}
                       >
                         Confirm
                       </Button>
                     </TableCell>
+
+                    <TableCell>
+                    <NavLink to="/enquiry-form">
+                    <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      sx={{
+                        border: "1px solid transparent",
+                        textTransform: "none",
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                          color: "success.main",
+                          borderColor: "success.main",
+                        },
+                      }}
+                      onClick={() => setCallingStudentName(data.Name)}
+                    >
+                      Enquiry
+                    </Button>
+                    </NavLink>
+                    </TableCell>
+
                   </TableRow>
                 ))}
               </TableBody>

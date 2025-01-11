@@ -31,11 +31,11 @@ const SalesHome = () => {
   const options = [
     { label: "Add Enquiry", icon: <AddIcon />, key: "Add Enquiry" },
     { label: "Follow-Ups", icon: <LoopIcon />, key: "Follow-Ups" },
-    { label: "Calling", icon: <PhoneInTalkIcon />, key: "Calling" },
     { label: "Confirmed", icon: <CheckCircleOutlineIcon />, key: "Confirmed" },
-    { label: "Enrolled Student", icon: <SchoolIcon />, key: "Enrolled Student" },
+    { label: "Calling", icon: <PhoneInTalkIcon />, key: "Calling" },
     { label: "Will Visit", icon: <DirectionsCarIcon />, key: "Will Visit" },
     { label: "Call Back", icon: <PhoneCallbackIcon />, key: "Call Back" },
+    { label: "Enrolled Student", icon: <SchoolIcon />, key: "Enrolled Student" },
   ];
 
   const Content = () => {
