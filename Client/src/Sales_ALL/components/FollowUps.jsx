@@ -26,7 +26,7 @@ import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
 
 const FollowUps = () => {
-  const { backendUrl, account } = useContext(DataContext);
+  const { backendUrl, account, role} = useContext(DataContext);
   const salesName = account.name;
 
   const tableOptions = [
@@ -90,6 +90,7 @@ const FollowUps = () => {
       salesName,
       fullName: selectedEnquiry.fullName,
       [`response${selectedResponseIndex + 1}`]: responseValue,
+      role:role
     };
 
     try {
@@ -104,10 +105,15 @@ const FollowUps = () => {
     }
   };
 
-  const handleConfirmedStudent = (data) => {
-    setOpenConfimedModal(true);
-    setConfirmedModalStudentDetails(data);
-  };
+const handleConfirmedStudent = (data) => {
+  setOpenConfimedModal(true); 
+  setConfirmedModalStudentDetails(prevDetails => ({
+    ...prevDetails,
+    role: role,  
+    ...data      
+  }));
+};
+
 
   const deleteConfirmedStudent = async () => {
     setSaving(true);

@@ -43,7 +43,9 @@ const NotInterested = () => {
     <Box>
       {/* Show loading spinner while data is being fetched */}
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           {/* Render data table if data is available */}

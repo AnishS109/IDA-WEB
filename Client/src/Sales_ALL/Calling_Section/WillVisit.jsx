@@ -80,7 +80,9 @@ const WillVist = () => {
     <Box>
       {/* Show loading spinner if data is loading */}
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           {WillVistData.length > 0 ? (

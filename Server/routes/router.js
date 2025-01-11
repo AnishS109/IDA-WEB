@@ -11,6 +11,7 @@ import uploadimg from "../utils/uploadimg.js"
 import { deleteCallingStudentDetails, fetchCallingStudentDetails, updateCallingDetails, CallBackData } from "../controllers/callingStudent.js"
 import { callCategoryData, WillVisitedUpdateData} from "../controllers/callCategory.js"
 import mailSender from "../controllers/mailSender.js"
+import { salesAuthorisation } from "../utils/salesAuth.js"
 
 const router = express.Router()
 
@@ -29,15 +30,15 @@ router.post("/userLogin", userLogin)
 // -------------- SALES SECTION API ---------------
 
 router.get("/allEnquiryDetails/:salesName", fetchEnquiryDetails)
-router.put("/update-sales-enquiryResponse", updateEnquiryDetails)
+router.put("/update-sales-enquiryResponse", salesAuthorisation, updateEnquiryDetails)
 router.post("/addEnquiryDetails", addEnquiry)
-router.delete("/delete-sales-enquiryDetails", deleteEnquiryDetails)
+router.delete("/delete-sales-enquiryDetails", salesAuthorisation, deleteEnquiryDetails)
 
-router.post("/add-Confirmed_Student_Details", addConfirmStudentDetails)
+router.post("/add-Confirmed_Student_Details", salesAuthorisation, addConfirmStudentDetails)
 router.get("/Confirmed_Student_Details/:salesName", fetchConfirmStudentDetails)
 router.post("/Student-Enrolled-Images",uploadimg.single("file"), UploadImage);
 router.get("/file/:filename", getImage)
-router.delete("/confirm-student-details-delete",deleteConfirmStudentDetails)
+router.delete("/confirm-student-details-delete", salesAuthorisation, deleteConfirmStudentDetails)
 
 router.get("/enrolled-student-details/:salesName", fetchEnrolledStudentDetails)
 router.post("/Student-Enrolled-Details", postEnrolledStudent);
@@ -46,12 +47,12 @@ router.put("/Student-Enrolled-Details-Update", updateStudentEnrollment);
 router.post("/Enrolled-Student-Mail-Send", mailSender());
 
 router.get("/calling-student-details",fetchCallingStudentDetails)
-router.put("/calling-student-update-details",updateCallingDetails)
+router.put("/calling-student-update-details", salesAuthorisation, updateCallingDetails)
 router.post("/calling-will-visited-update-details",WillVisitedUpdateData)
 router.post("/calling-callback-updates",CallBackData)
-
-router.get("/Call-Category-Data", callCategoryData);
 router.delete("/Call-Deleting-Data", deleteCallingStudentDetails);
+router.get("/Call-Category-Data", callCategoryData);
+
 
 
 

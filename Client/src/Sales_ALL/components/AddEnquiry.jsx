@@ -31,8 +31,7 @@ const AddEnquiry = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalTitle, setModalTitle] = useState('');
-
-  const { backendUrl, account, CallingStudentname , setCallingStudentName } = useContext(DataContext);
+  const { backendUrl, account, CallingStudentname, setCallingStudentName, role } = useContext(DataContext);
 
   //------------------ Reducer for Form State ------------------
   const reducer = (state, action) => {
@@ -69,7 +68,7 @@ const AddEnquiry = () => {
     studentName: "",
     staffName: "",
     salesName: account.name,
-    postPassingYear:"",
+    postPassingYear: "",
   };
 
   //------------------ UseReducer Hook ------------------
@@ -86,15 +85,14 @@ const AddEnquiry = () => {
     const DATA = {
       salesName: account.name,
       fullName: CallingStudentname,
+      role: role,
     };
-
-    console.log(DATA) // Check data before sending
 
     try {
       // API request to delete the calling data
       const response = await axios.delete(`${backendUrl}/Call-Deleting-Data`, { data: DATA });
     } catch (error) {
-      console.log("ERROR WHILE DELETING THE DATA:", error);
+      // console.log("ERROR WHILE DELETING THE DATA:", error);
     } finally {
       setCallingStudentName(""); // Clear the calling student name after deletion
     }
@@ -103,6 +101,41 @@ const AddEnquiry = () => {
   //------------------ Handle Form Submission ------------------
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent form default action
+
+    // Perform field validation before submitting
+    if (
+      !state.fullName ||
+      !state.contact_no ||
+      !state.current_Address ||
+      !state.Category ||
+      !state.tenthPercent ||
+      !state.twelvethPercent ||
+      !state.leadSource
+    ) {
+      setModalTitle("Error");
+      setModalMessage("Please fill all required fields."); // Error message
+      setModalOpen(true);
+      return;
+    }
+
+    // Validate contact number: must be numeric
+    if (!/^\d+$/.test(state.contact_no)) {
+      setModalTitle("Error");
+      setModalMessage("Contact number must be numeric."); // Error message
+      setModalOpen(true);
+      return;
+    }
+
+    // Validate percentage fields: must be numeric and between 0 and 100
+    if (
+      (state.tenthPercent && (isNaN(state.tenthPercent) || state.tenthPercent < 0 || state.tenthPercent > 100)) ||
+      (state.twelvethPercent && (isNaN(state.twelvethPercent) || state.twelvethPercent < 0 || state.twelvethPercent > 100))
+    ) {
+      setModalTitle("Error");
+      setModalMessage("Percentage must be between 0 and 100."); // Error message
+      setModalOpen(true);
+      return;
+    }
 
     try {
       const response = await axios.post(`${backendUrl}/addEnquiryDetails`, state); // Post enquiry data to backend
@@ -115,7 +148,7 @@ const AddEnquiry = () => {
       }
     } catch (error) {
       setModalTitle("Error");
-      setModalMessage(error.response.data.message); // Error message
+      setModalMessage(error.response?.data?.message || "Error submitting form."); // Error message
       setModalOpen(true);
       console.error("Error while submitting add-Enquiry Details", error);
     }
@@ -160,19 +193,24 @@ const AddEnquiry = () => {
                   name="fullName"
                   value={state.fullName}
                   onChange={handleChange}
+                  required
                 />
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Contact No."
-                  variant="outlined"
-                  name="contact_no"
-                  value={state.contact_no}
-                  onChange={handleChange}
-                />
-              </Grid>
+              <TextField
+                fullWidth
+                label="Contact No."
+                variant="outlined"
+                name="contact_no"
+                value={state.contact_no}
+                onChange={handleChange}
+                inputProps={{
+                  pattern: "[0-9]*", // Only allow numbers
+                }}
+                required
+              />
+            </Grid>
 
               <Grid item xs={12}>
                 <TextField
@@ -234,26 +272,36 @@ const AddEnquiry = () => {
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="10th Percentage"
-                  variant="outlined"
-                  name="tenthPercent"
-                  value={state.tenthPercent}
-                  onChange={handleChange}
-                />
-              </Grid>
+              <TextField
+                fullWidth
+                label="10th Percentage"
+                variant="outlined"
+                name="tenthPercent"
+                value={state.tenthPercent}
+                onChange={handleChange}
+                inputProps={{
+                  type: "number",
+                  min: "0",
+                  max: "100",
+                }}
+              />
+            </Grid>
 
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="12th Percentage"
-                  variant="outlined"
-                  name="twelvethPercent"
-                  value={state.twelvethPercent}
-                  onChange={handleChange}
-                />
-              </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="12th Percentage"
+                variant="outlined"
+                name="twelvethPercent"
+                value={state.twelvethPercent}
+                onChange={handleChange}
+                inputProps={{
+                  type: "number",
+                  min: "0",
+                  max: "100",
+                }}
+              />
+            </Grid>
 
               <Grid item xs={12}>
                 <FormControl component="fieldset">
@@ -452,9 +500,18 @@ const AddEnquiry = () => {
               {/* Submit & Reset Buttons */}
 
               <Grid item xs={12} display="flex" justifyContent="space-between">
-                <Button type="submit" variant="contained" color="primary">
+
+                <Button 
+                type="submit" 
+                variant="contained" 
+                color="primary"
+                disabled={!state.fullName || !state.contact_no || !state.current_Address || !state.Category || !state.tenthPercent || !state.twelvethPercent || !state.leadSource}
+                >
+
                   Submit
+
                 </Button>
+
               </Grid>
             </Grid>
           </form>

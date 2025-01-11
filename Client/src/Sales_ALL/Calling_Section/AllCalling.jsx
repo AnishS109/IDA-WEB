@@ -22,7 +22,7 @@ const Calling = () => {
   const [searchTerm, setSearchTerm] = useState('');  
   const [loading, setLoading] = useState(false); 
 
-  const { backendUrl, account, setCallingStudentName } = useContext(DataContext);
+  const { backendUrl, account, setCallingStudentName, role } = useContext(DataContext);
   //-------------------------------------------------------------------
 
   //------------------------- Modal Handlers -------------------------
@@ -42,7 +42,8 @@ const Calling = () => {
     const responseData = {
       fullName: selectedEnquiry.Name,
       [`response${selectedResponseIndex + 1}`]: `${responseValue} (By ${account.name})`,
-      salesName: account.name
+      salesName: account.name,
+      role:role
     };
 
     try {

@@ -962,7 +962,20 @@ const EnrollmentForm = () => {
               variant="contained"
               color="primary"
               type="submit"
-              disabled={!formData.fullName || !formData.photo || !formData.courseName || !formData.leadSource}
+              disabled={
+                !formData.fullName || 
+                !formData.photo || 
+                !formData.dob || 
+                !formData.email ||
+                !formData.mobileNumber ||
+                !formData.college ||
+                !formData.gender ||
+                !formData.presentAddress ||
+                !formData.documentImage ||
+                !formData.courseName ||
+                !formData.leadSource
+              }
+
               onClick={handleSubmit}
             >
               Submit Enrollment Form

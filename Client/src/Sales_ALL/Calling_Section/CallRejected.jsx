@@ -53,7 +53,9 @@ const CallRejected = () => {
       {/*------------------------- Loader -------------------------*/}
       {/* Agar loading true ho toh spinner dikhana */}
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           {/*------------------------- Data Rendering -------------------------*/}

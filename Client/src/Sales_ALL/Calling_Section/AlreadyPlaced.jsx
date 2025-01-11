@@ -43,7 +43,9 @@ const AlreadyPlaced = () => {
       {/*------------------------- Loader -------------------------*/}
 
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           {/*------------------------- Data Rendering -------------------------*/}

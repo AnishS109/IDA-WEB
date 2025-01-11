@@ -18,7 +18,7 @@ import { DataContext } from "../../Context/DataProvider";
 import { NavLink } from "react-router-dom";
 
 const Confirmed = () => {
-  const { backendUrl, account, confirmedStudentDone, setConfirmedStudentDone } = useContext(DataContext);
+  const { backendUrl, account, confirmedStudentDone, setConfirmedStudentDone, role } = useContext(DataContext);
   const [confirmStudentDetails, setConfirmStudentDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredStudentDetails, setFilteredStudentDetails] = useState([]);
@@ -56,7 +56,7 @@ const Confirmed = () => {
   useEffect(() => {
     const deleteConfirmStudentDetails = async () => {
       if (confirmedStudentDone && confirmedStudent) {
-        const reqData = { salesName: account.name, fullName: confirmedStudent };
+        const reqData = { salesName: account.name, fullName: confirmedStudent, role:role };
 
         try {
           await axios.delete(`${backendUrl}/confirm-student-details-delete`, { data: reqData });

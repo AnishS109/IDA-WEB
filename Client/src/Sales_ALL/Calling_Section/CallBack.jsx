@@ -22,7 +22,7 @@ const CallBack = () => {
 
         setCallBackData(filteredData.length > 0 ? filteredData : []); // Update state with fetched data
       } catch (error) {
-        console.log("ERROR WHILE FETCHING CALL BACK DATA:", error);
+        // console.log("ERROR WHILE FETCHING CALL BACK DATA:", error);
       } finally {
         setLoading(false); // Set loading to false when data fetching is complete
       }
@@ -36,7 +36,9 @@ const CallBack = () => {
     <Box>
       {/* Show loading spinner if data is being fetched */}
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           {CallBackData.length > 0 ? (

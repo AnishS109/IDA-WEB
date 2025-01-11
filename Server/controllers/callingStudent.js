@@ -95,7 +95,7 @@ export const updateCallingDetails = async (req, res) => {
   
     try {
       // Use findOneAndDelete to delete and get the deleted document
-      const deletedEnquiry = await CallingStudentSchema.findOneAndDelete({ fullName });
+      const deletedEnquiry = await CallingStudentSchema.findOneAndDelete({ salesName:salesName ,Name:fullName });
       
       if (!deletedEnquiry) {
         return res.status(404).json({ message: "Student not found or already deleted." });

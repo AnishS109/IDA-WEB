@@ -35,7 +35,9 @@ const Visited = () => {
     <Box>
       {/* Show loading spinner while data is being fetched */}
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           {/* Render table if data is available */}

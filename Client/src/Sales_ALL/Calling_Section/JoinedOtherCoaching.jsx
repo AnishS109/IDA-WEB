@@ -43,7 +43,9 @@ const JoinedOtherCoaching = () => {
     <Box>
       {/*------------------------- Loader -------------------------*/}
       {loading ? (
-        <CircularProgress /> // Display a loader while data is being fetched
+        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+          <CircularProgress />
+        </Box> // Display a loader while data is being fetched
       ) : (
         <>
           {/*------------------------- Data Table -------------------------*/}

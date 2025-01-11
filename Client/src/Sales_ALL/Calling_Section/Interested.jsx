@@ -48,7 +48,9 @@ const Interested = () => {
       {/*------------------------- Loader -------------------------*/}
       {/* Agar loading true ho toh CircularProgress dikhana */}
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           {/*------------------------- Table Rendering -------------------------*/}
