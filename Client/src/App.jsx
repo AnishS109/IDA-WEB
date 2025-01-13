@@ -1,10 +1,11 @@
-import { lazy, Suspense, useEffect, useState, useContext } from "react";
+import { lazy, Suspense, useContext } from "react";
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import DataProvider, { DataContext } from "./Context/DataProvider";
 import Loader from "./components/Loader";
 import EnrollmentForm from "./Sales_ALL/Sub_Components/EnrollmentForm.jsx";
 import AddEnquiry from "./Sales_ALL/components/AddEnquiry.jsx";
 import ScrollToTopOnRouteChange from "./ScrollToTop.jsx";
+import ForgotPassword from "./Pages/ForgotPassword.jsx";
 
 // Lazy-loaded components
 const Home = lazy(() => import("./Pages/Home"));
@@ -33,6 +34,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forget-password" element={<ForgotPassword />} />
 
             {/* ------------ PRIVATE ROUTES ------------ */}
 

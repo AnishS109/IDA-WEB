@@ -1,4 +1,4 @@
-import CallingStudentSchema from "../models/callingStudentSchema.js";
+import CallingStudentSchema from "../../models/callingStudentSchema.js";
 
 export const fetchCallingStudentDetails = async (req, res) => {
   try {

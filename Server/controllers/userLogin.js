@@ -29,7 +29,7 @@ export const userLogin = async(req, res) => {
         role: user.role
       }, 
         Access_Token, 
-        {expiresIn:"30m"})
+        {expiresIn:"24h"})
       const refreshToken = jwt.sign({userName: user.userName, role: user.role}, Refresh_Token)
 
       const newToken = await TokenSchema({token:refreshToken})

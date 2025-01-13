@@ -1,4 +1,4 @@
-import addEnquirySchema from "../models/addEnquirySchema.js"
+import addEnquirySchema from "../../models/addEnquirySchema.js"
 
 // -------------- Add Enquiry Details (POST REQUEST)---------------
 

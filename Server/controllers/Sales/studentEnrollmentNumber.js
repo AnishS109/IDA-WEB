@@ -1,4 +1,4 @@
-import StudentIdCounterSchema from "../models/studentIdCounterSchema.js";
+import StudentIdCounterSchema from "../../models/studentIdCounterSchema.js";
 
 // -------------- Student Enrollment Number Details (GET REQUEST)---------------
 

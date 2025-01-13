@@ -1,5 +1,5 @@
 
-import { sendEmail } from '../utils/emailService.js';
+import { sendEmail } from '../../utils/emailService.js';
 
 const mailSender = () => async (req, res) => {
   const { name, email, courseEnrolled } = req.body;

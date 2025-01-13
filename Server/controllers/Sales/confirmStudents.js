@@ -1,4 +1,4 @@
-import confirmStudentSchema from "../models/confirmStudentSchema.js"
+import confirmStudentSchema from "../../models/confirmStudentSchema.js"
 
 
 // -------------- Add ConfirmStudent Details (POST REQUEST) ---------------

@@ -1,17 +1,18 @@
 import express from "express"
 import cors from "cors"
-import { addEnquiry, deleteEnquiryDetails, fetchEnquiryDetails, updateEnquiryDetails } from "../controllers/addEnquiry.js"
+import { addEnquiry, deleteEnquiryDetails, fetchEnquiryDetails, updateEnquiryDetails } from "../controllers/Sales/addEnquiry.js"
 import { userRegister } from "../controllers/userRegister.js"
 import { userLogin } from "../controllers/userLogin.js"
-import { addConfirmStudentDetails, deleteConfirmStudentDetails, fetchConfirmStudentDetails } from "../controllers/confirmStudents.js"
-import { getImage, UploadImage } from "../controllers/ImageController.js"
-import { fetchEnrolledStudentDetails, postEnrolledStudent } from "../controllers/enrolledStudent.js"
-import { getCurrentStudentId, updateStudentEnrollment,  } from "../controllers/studentEnrollmentNumber.js"
+import { addConfirmStudentDetails, deleteConfirmStudentDetails, fetchConfirmStudentDetails } from "../controllers/Sales/confirmStudents.js"
+import { getImage, UploadImage } from "../controllers/Sales/ImageController.js"
+import { fetchEnrolledStudentDetails, postEnrolledStudent } from "../controllers/Sales/enrolledStudent.js"
+import { getCurrentStudentId, updateStudentEnrollment,  } from "../controllers/Sales/studentEnrollmentNumber.js"
 import uploadimg from "../utils/uploadimg.js"
-import { deleteCallingStudentDetails, fetchCallingStudentDetails, updateCallingDetails, CallBackData } from "../controllers/callingStudent.js"
-import { callCategoryData, WillVisitedUpdateData} from "../controllers/callCategory.js"
-import mailSender from "../controllers/mailSender.js"
+import { deleteCallingStudentDetails, fetchCallingStudentDetails, updateCallingDetails, CallBackData } from "../controllers/Sales/callingStudent.js"
+import { callCategoryData, WillVisitedUpdateData} from "../controllers/Sales/callCategory.js"
+import mailSender from "../controllers/Sales/mailSender.js"
 import { salesAuthorisation } from "../utils/salesAuth.js"
+import { changePassword, forgotPasswordEmailSend } from "../controllers/forgotPassword.js"
 
 const router = express.Router()
 
@@ -26,6 +27,11 @@ router.post("/userRegister", userRegister)
 // -------------- LOGIN API ---------------
 
 router.post("/userLogin", userLogin)
+
+// -------------- FORGOT PASSWORD API ---------------
+
+router.post("/forgetPassword", forgotPasswordEmailSend)
+router.post("/changePassword", changePassword)
 
 // -------------- SALES SECTION API ---------------
 

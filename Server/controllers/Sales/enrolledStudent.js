@@ -1,4 +1,4 @@
-import EnrolledStudentSchema from "../models/enrolledStutdentSchema.js"
+import EnrolledStudentSchema from "../../models/enrolledStutdentSchema.js"
 
 // -------------- Add Enrolled Student Details (POST REQUEST)---------------
 

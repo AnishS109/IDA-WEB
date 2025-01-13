@@ -1,4 +1,4 @@
-import CallingStudentSchema from "../models/callingStudentSchema.js";
+import CallingStudentSchema from "../../models/callingStudentSchema.js";
 
 export const callCategoryData = async (req, res) => {
   const salesName = req.query.salesName; // Get salesName from query

@@ -266,12 +266,39 @@ const Login = () => {
           </Button>
 
           {/* --------- ROUTES FOR REGISTER --------- */}
+
           <Typography sx={{ color: "black" }}>
             Don't have an account?
             <NavLink to={"/register"}>
               <Button>Sign up</Button>
             </NavLink>
           </Typography>
+
+          {/* --------- ROUTES FOR FORGET PASSWORD --------- */}
+
+          <Typography
+          sx={{
+            fontSize: "14px",
+            color: "#666",
+          }}
+        >
+          Forgot password?{" "}
+          <NavLink to={"/forget-password"}>
+            <Button
+              size="small"
+              sx={{
+                textTransform: "none",
+                padding: 0,
+                fontSize: "14px",
+                fontWeight: "bold",
+                color: "#1976d2",
+              }}
+            >
+              Click here
+            </Button>
+          </NavLink>
+        </Typography>
+
         </Box>
       </Box>
     </>
