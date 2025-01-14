@@ -10,7 +10,6 @@ import Interested from "../Calling_Section/Interested"
 import JoinedOtherCoaching from "../Calling_Section/JoinedOtherCoaching"
 import NotRequiredCourse from "../Calling_Section/NotRequiredCourse"
 import AlreadyPlaced from '../Calling_Section/AlreadyPlaced'
-import Visited from '../Calling_Section/Visited'
 
 const Calling = () => {
 
@@ -37,11 +36,10 @@ const Calling = () => {
       <MenuItem value="Not Interested">Not Interested</MenuItem>
       <MenuItem value="Interested">Interested</MenuItem>
       <MenuItem value="Call Forwarded">Call Forwarded</MenuItem>
-      <MenuItem value="Alread Placed">Alread Placed</MenuItem>
+      <MenuItem value="Already Placed">Alread Placed</MenuItem>
       <MenuItem value="Not Require Any Course">Not Require Any Course</MenuItem>
       <MenuItem value="Joined Other Institute">Joined Other Institute</MenuItem>
       <MenuItem value="Call Rejected In Between">Call Rejected In Between</MenuItem>
-      <MenuItem value="Visited">Visited</MenuItem>
 
       </Select>
       </FormControl>
@@ -70,7 +68,7 @@ const Calling = () => {
       (
         <CallForwarded/>
       ):
-      selectedCategory === "Alread Placed" ? 
+      selectedCategory === "Already Placed" ? 
       (
         <AlreadyPlaced/>
       ):
@@ -85,10 +83,6 @@ const Calling = () => {
       selectedCategory === "Call Rejected In Between" ? 
       (
         <CallRejectedInBetween/>
-      ):
-      selectedCategory === "Visited" ? 
-      (
-        <Visited/>
       ):
       (<h1>Please Select Category</h1>)
       }

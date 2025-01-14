@@ -16,6 +16,8 @@ import EnrolledStudent from "./components/EnrolledStudent";
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
 import CallBack from "./Calling_Section/CallBack";
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import Visited from "./Calling_Section/Visited";
 
 const SalesHome = () => {
 
@@ -35,6 +37,7 @@ const SalesHome = () => {
     { label: "Calling", icon: <PhoneInTalkIcon />, key: "Calling" },
     { label: "Will Visit", icon: <DirectionsCarIcon />, key: "Will Visit" },
     { label: "Call Back", icon: <PhoneCallbackIcon />, key: "Call Back" },
+    { label: "Visited", icon: <TaskAltIcon />, key: "Visited" },
     { label: "Enrolled Student", icon: <SchoolIcon />, key: "Enrolled Student" },
   ];
 
@@ -59,6 +62,9 @@ const SalesHome = () => {
     }
     else if (selectedOption === "Call Back") {
       return <CallBack />;
+    }
+    else if (selectedOption === "Visited") {
+      return <Visited />;
     }
   };
 

@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { NavLink } from "react-router-dom"
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography, Button } from '@mui/material';
 
 const Visited = () => {
   const [visitedData, setVisitedData] = useState([]);  // State for storing the data
   const [loading, setLoading] = useState(true);  // Loading state to show spinner
-  const { backendUrl, account } = useContext(DataContext);  // Context for backend URL and account info
+  const { backendUrl, account, setCallingStudentName } = useContext(DataContext);  // Context for backend URL and account info
 
   useEffect(() => {
     const fetchVisited = async () => {
@@ -47,6 +48,7 @@ const Visited = () => {
                 <TableRow>
                   <TableCell>Student Name</TableCell>
                   <TableCell>Mobile Number</TableCell>
+                  <TableCell>Enquiry</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -55,6 +57,27 @@ const Visited = () => {
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
                     <TableCell>{data.Mobile_No}</TableCell>
+                    <TableCell>
+                    <NavLink to="/enquiry-form">
+                    <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      sx={{
+                        border: "1px solid transparent",
+                        textTransform: "none",
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                          color: "success.main",
+                          borderColor: "success.main",
+                        },
+                      }}
+                      onClick={() => setCallingStudentName(data.Name)}
+                    >
+                      Enquiry
+                    </Button>
+                    </NavLink>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

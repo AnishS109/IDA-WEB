@@ -4,10 +4,10 @@ const transporter = nodemailer.createTransport({
   host:"smtp.gmail.com",
   port: 465,
   secure: true,
-  service: 'gmail', // Use your preferred email service
+  service: 'gmail', 
   auth: {
-    user: "anishsaini909886@gmail.com", // Your email address
-    pass: "qeslzuxmymvtnvgo", // Your email password or app-specific password
+    user: "anishsaini909886@gmail.com", 
+    pass: "qeslzuxmymvtnvgo", 
   },
 });
 

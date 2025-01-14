@@ -118,6 +118,10 @@ const Register = () => {
         state.registerDetails
       );
       if (response.status === 200) {
+        dispatchState({
+          type: "SET_ERROR",
+          payload: "",
+        });
         dispatchState({ type: "SET_SUCCESS", payload: "Registered Successfully" });
         setTimeout(() => {
           navigate("/");
@@ -129,10 +133,10 @@ const Register = () => {
       console.log("Error while registering", error);
       dispatchState({
         type: "SET_ERROR",
-        payload: "An error occurred while registering. Please try again.",
+        payload: error.response.data.msg,
       });
     } finally {
-      dispatchState({ type: "SET_LOADING", payload: false }); // Stop loader
+      dispatchState({ type: "SET_LOADING", payload: false }); 
     }
   };
 

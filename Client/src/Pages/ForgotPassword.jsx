@@ -146,97 +146,131 @@ const ForgotPassword = () => {
   };
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        bgcolor: "#fff",
+<Box
+  sx={{
+    minHeight: "100vh",
+    width: "100vw",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    bgcolor: "#fff",
+  }}
+>
+  <Box
+    sx={{
+      width: { xs: "90%", sm: "28rem" }, // Responsive width: 90% on small devices, 28rem on medium and larger
+      bgcolor: "white",
+      boxShadow: "0px 8px 40px rgba(0, 0, 0, 0.3)",
+      borderRadius: "20px",
+      textAlign: "center",
+      padding: { xs: "20px", sm: "40px 30px" }, // Smaller padding on small screens
+      position: "relative", // For positioning the loader
+    }}
+  >
+    {/* --------- Logo Section --------- */}
+    <img
+      src={Logo}
+      alt="IDA LOGO"
+      style={{
+        maxHeight: "70px",
+        objectFit: "contain",
+        marginBottom: "20px",
+        width: "auto",
       }}
-    >
+    />
+
+    {/* --------- SUCCESS MESSAGE --------- */}
+    {state.successMsg && (
+      <Typography sx={{ color: "green", mb: "5px" }}>
+        {state.successMsg}
+      </Typography>
+    )}
+
+    {/* --------- ERROR MESSAGE --------- */}
+    {state.errorMsg && (
+      <Typography sx={{ color: "red", mb: "5px" }}>
+        {state.errorMsg}
+      </Typography>
+    )}
+
+    {/* --------- LOADER (Centered) --------- */}
+    {loading && (
       <Box
         sx={{
-          height: "auto",
-          width: "28rem",
-          bgcolor: "white",
-          boxShadow: "0px 8px 40px rgba(0, 0, 0, 0.3)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          bgcolor: "rgba(255, 255, 255, 0.8)", // Slightly dim the background
           borderRadius: "20px",
-          textAlign: "center",
-          padding: "40px 30px",
-          position: "relative", // For positioning the loader
         }}
       >
-        {/* --------- Logo Section --------- */}
-        <img
-          src={Logo}
-          alt="IDA LOGO"
-          style={{
-            maxHeight: "70px",
-            objectFit: "contain",
-            marginBottom: "20px",
-          }}
-        />
+        <CircularProgress />
+      </Box>
+    )}
 
-        {/* --------- SUCCESS MESSAGE --------- */}
-        {state.successMsg && (
-          <Typography sx={{ color: "green", mb: "5px" }}>{state.successMsg}</Typography>
-        )}
+    {/* --------- Form Heading --------- */}
+    <Typography
+      variant="h5"
+      sx={{
+        fontWeight: "600",
+        color: "#333",
+        marginBottom: "10px",
+        fontSize: { xs: "18px", sm: "24px" }, // Responsive font size
+      }}
+    >
+      Recover Password
+    </Typography>
+    <Typography
+      sx={{
+        fontSize: { xs: "12px", sm: "14px" }, // Responsive font size
+        color: "#666",
+        marginBottom: "30px",
+      }}
+    >
+      Please enter your registered email to recover your password.
+    </Typography>
 
-        {/* --------- ERROR MESSAGE --------- */}
-        {state.errorMsg && (
-          <Typography sx={{ color: "red", mb: "5px" }}>{state.errorMsg}</Typography>
-        )}
+    {/* --------- Email Input --------- */}
+    <TextField
+      label="Email Address"
+      name="email"
+      fullWidth
+      variant="outlined"
+      placeholder="Enter your email"
+      sx={{
+        backgroundColor: "#f9f9f9",
+        borderRadius: "5px",
+        "& .MuiOutlinedInput-root": {
+          "& fieldset": {
+            borderColor: "#ccc",
+          },
+          "&:hover fieldset": {
+            borderColor: "#888",
+          },
+          "&.Mui-focused fieldset": {
+            borderColor: "#1976d2",
+          },
+        },
+        marginBottom: "20px",
+      }}
+      onChange={handleChange}
+      value={state.formData.email}
+    />
 
-        {/* --------- LOADER (Centered) --------- */}
-        {loading && (
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              bgcolor: "rgba(255, 255, 255, 0.8)", // Slightly dim the background
-              borderRadius: "20px",
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        )}
-
-        {/* --------- Form Heading --------- */}
-        <Typography
-          variant="h5"
-          sx={{
-            fontWeight: "600",
-            color: "#333",
-            marginBottom: "10px",
-          }}
-        >
-          Recover Password
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: "14px",
-            color: "#666",
-            marginBottom: "30px",
-          }}
-        >
-          Please enter your registered email to recover your password.
-        </Typography>
-
-        {/* --------- Email Input --------- */}
+    {/* --------- OTP Input (if OTP visible) --------- */}
+    {state.otpVisible && (
+      <>
         <TextField
-          label="Email Address"
-          name="email"
+          label="OTP"
+          name="otp"
           fullWidth
           variant="outlined"
-          placeholder="Enter your email"
+          placeholder="Enter your OTP"
           sx={{
             backgroundColor: "#f9f9f9",
             borderRadius: "5px",
@@ -254,132 +288,102 @@ const ForgotPassword = () => {
             marginBottom: "20px",
           }}
           onChange={handleChange}
-          value={state.formData.email}
+          value={state.formData.otp}
         />
 
-        {/* --------- OTP Input (if OTP visible) --------- */}
-        {state.otpVisible && (
-          <>
-
-          <TextField
-            label="OTP"
-            name="otp"
-            fullWidth
-            variant="outlined"
-            placeholder="Enter your OTP"
-            sx={{
-              backgroundColor: "#f9f9f9",
-              borderRadius: "5px",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#ccc",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#888",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#1976d2",
-                },
-              },
-              marginBottom: "20px",
-            }}
-            onChange={handleChange}
-            value={state.formData.otp}
-          />
-
-          <TextField
-            label="New Password"
-            name="password"
-            fullWidth
-            variant="outlined"
-            placeholder="Enter new Password"
-            sx={{
-              backgroundColor: "#f9f9f9",
-              borderRadius: "5px",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#ccc",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#888",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#1976d2",
-                },
-              },
-              marginBottom: "20px",
-            }}
-            onChange={handleChange}
-            value={state.formData.password}
-          />
-          </>
-        )}
-
-        {/* --------- VERIFY BUTTON (Conditional Rendering) --------- */}
-        {submitButton ? (
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{
-              padding: "12px 0px",
-              fontSize: "16px",
-              fontWeight: "bold",
-              textTransform: "none",
-              borderRadius: "30px",
-              marginBottom: "20px",
-            }}
-            aria-label="Submit"
-            onClick={handleSubmit}
-          >
-            Submit
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{
-              padding: "12px 0px",
-              fontSize: "16px",
-              fontWeight: "bold",
-              textTransform: "none",
-              borderRadius: "30px",
-              marginBottom: "20px",
-            }}
-            aria-label="Verify Email"
-            onClick={handleVerify}
-            disabled={loading}
-          >
-            Verify
-          </Button>
-        )}
-
-        {/* --------- Login Prompt --------- */}
-        <Typography
+        <TextField
+          label="New Password"
+          name="password"
+          fullWidth
+          variant="outlined"
+          placeholder="Enter new Password"
           sx={{
-            fontSize: "14px",
-            color: "#666",
+            backgroundColor: "#f9f9f9",
+            borderRadius: "5px",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ccc",
+              },
+              "&:hover fieldset": {
+                borderColor: "#888",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#1976d2",
+              },
+            },
+            marginBottom: "20px",
+          }}
+          onChange={handleChange}
+          value={state.formData.password}
+        />
+      </>
+    )}
+
+    {/* --------- VERIFY BUTTON (Conditional Rendering) --------- */}
+    {submitButton ? (
+      <Button
+        variant="contained"
+        color="primary"
+        fullWidth
+        sx={{
+          padding: "12px 0px",
+          fontSize: { xs: "14px", sm: "16px" }, // Responsive font size
+          fontWeight: "bold",
+          textTransform: "none",
+          borderRadius: "30px",
+          marginBottom: "20px",
+        }}
+        aria-label="Submit"
+        onClick={handleSubmit}
+      >
+        Submit
+      </Button>
+    ) : (
+      <Button
+        variant="contained"
+        color="primary"
+        fullWidth
+        sx={{
+          padding: "12px 0px",
+          fontSize: { xs: "14px", sm: "16px" }, // Responsive font size
+          fontWeight: "bold",
+          textTransform: "none",
+          borderRadius: "30px",
+          marginBottom: "20px",
+        }}
+        aria-label="Verify Email"
+        onClick={handleVerify}
+        disabled={loading}
+      >
+        Verify
+      </Button>
+    )}
+
+    {/* --------- Login Prompt --------- */}
+    <Typography
+      sx={{
+        fontSize: { xs: "12px", sm: "14px" }, // Responsive font size
+        color: "#666",
+      }}
+    >
+      Remember your password?{" "}
+      <NavLink to={"/login"}>
+        <Button
+          size="small"
+          sx={{
+            textTransform: "none",
+            padding: 0,
+            fontSize: { xs: "12px", sm: "14px" }, // Responsive font size
+            fontWeight: "bold",
+            color: "#1976d2",
           }}
         >
-          Remember your password?{" "}
-          <NavLink to={"/login"}>
-            <Button
-              size="small"
-              sx={{
-                textTransform: "none",
-                padding: 0,
-                fontSize: "14px",
-                fontWeight: "bold",
-                color: "#1976d2",
-              }}
-            >
-              Login here
-            </Button>
-          </NavLink>
-        </Typography>
-      </Box>
-    </Box>
+          Login here
+        </Button>
+      </NavLink>
+    </Typography>
+  </Box>
+</Box>
   );
 };
 
