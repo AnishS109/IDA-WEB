@@ -26,6 +26,14 @@ import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
 
 const FollowUps = () => {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
+
   const { backendUrl, account, role} = useContext(DataContext);
   const salesName = account.name;
 

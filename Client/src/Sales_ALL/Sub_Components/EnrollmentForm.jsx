@@ -27,6 +27,13 @@ import { useNavigate } from "react-router-dom";
 
 const EnrollmentForm = () => {
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
+
   const { backendUrl, account, setConfirmedStudentDone } = useContext(DataContext);
 
   const [uploadFoto, setUploadFoto] = useState([]);

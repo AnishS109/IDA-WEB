@@ -2,12 +2,21 @@ import React, { useContext, useEffect, useState } from 'react';
 import { NavLink } from "react-router-dom"
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography, Button } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography, Button, TextField } from '@mui/material';
 
 const Visited = () => {
-  const [visitedData, setVisitedData] = useState([]);  // State for storing the data
-  const [loading, setLoading] = useState(true);  // Loading state to show spinner
-  const { backendUrl, account, setCallingStudentName } = useContext(DataContext);  // Context for backend URL and account info
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
+
+  const [visitedData, setVisitedData] = useState([]); 
+  const [loading, setLoading] = useState(true);  
+  const { backendUrl, account, setCallingStudentName } = useContext(DataContext);
+  const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
     const fetchVisited = async () => {
@@ -30,10 +39,27 @@ const Visited = () => {
     };
 
     fetchVisited();
-  }, [account.name, backendUrl]);  // Dependencies for useEffect to re-run when account or backend URL changes
+  }, [account.name, backendUrl]);  
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  const filterData = visitedData.filter((data) => 
+  data.Name.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
     <Box>
+
+      <TextField
+      placeholder='Search by Name'
+      label='Search by Name'
+      name='searchName'
+      fullWidth
+      value={searchTerm}
+      onChange={handleSearchChange}
+      />
+
       {/* Show loading spinner while data is being fetched */}
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" height="300px">
@@ -53,7 +79,7 @@ const Visited = () => {
               </TableHead>
               <TableBody>
                 {/* Loop through visitedData to display each row */}
-                {visitedData.map((data, index) => (
+                {filterData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
                     <TableCell>{data.Mobile_No}</TableCell>

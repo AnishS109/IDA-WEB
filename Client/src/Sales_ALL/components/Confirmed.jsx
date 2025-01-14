@@ -18,7 +18,21 @@ import { DataContext } from "../../Context/DataProvider";
 import { NavLink } from "react-router-dom";
 
 const Confirmed = () => {
-  const { backendUrl, account, confirmedStudentDone, setConfirmedStudentDone, role } = useContext(DataContext);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
+
+  const { 
+    backendUrl, 
+    account, 
+    confirmedStudentDone, 
+    setConfirmedStudentDone, 
+    role } = useContext(DataContext);
+
   const [confirmStudentDetails, setConfirmStudentDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredStudentDetails, setFilteredStudentDetails] = useState([]);

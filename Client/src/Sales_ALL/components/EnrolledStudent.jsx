@@ -13,6 +13,13 @@ const EnrolledStudent = () => {
   const { backendUrl, account } = useContext(DataContext);
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
+
+  useEffect(() => {
     const fetchEnrolledStudentDetails = async () => {
       try {
         const response = await axios.get(

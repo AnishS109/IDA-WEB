@@ -1,5 +1,5 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AllCalling from "../Calling_Section/AllCalling"
 import CallRejected from '../Calling_Section/CallRejected'
 import NotPickedCall from "../Calling_Section/NotPickedCall"
@@ -12,6 +12,13 @@ import NotRequiredCourse from "../Calling_Section/NotRequiredCourse"
 import AlreadyPlaced from '../Calling_Section/AlreadyPlaced'
 
 const Calling = () => {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
 
   const [selectedCategory, setSelectedCategory] = useState("All")
 

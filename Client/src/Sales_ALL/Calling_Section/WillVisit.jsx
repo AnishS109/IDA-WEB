@@ -5,8 +5,17 @@ import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress
 import { NavLink } from 'react-router-dom';
 
 const WillVist = () => {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
+
   const [WillVistData, setWillVistData] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state for the API call
+  const [searchTerm, setSearchTerm] = useState("")
   const { backendUrl, account, setCallingStudentName } = useContext(DataContext);
 
   // Function to handle the checkbox change and update the visited status
@@ -76,8 +85,27 @@ const WillVist = () => {
     fetchWillVistData();
   }, [account.name, backendUrl]);
 
+  const handleSearchChange = (e) => {
+    const searchValue = e.target.value
+    setSearchTerm(searchValue)
+  }
+
+  const filteredData = WillVistData.filter((data) =>
+    data.Name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Box>
+
+      <TextField
+      fullWidth
+      placeholder='Search by Name'
+      label='Search by Name'
+      name='searchName'
+      value={searchTerm}
+      onChange={handleSearchChange}
+      />
+
       {/* Show loading spinner if data is loading */}
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" height="300px">
@@ -86,6 +114,7 @@ const WillVist = () => {
       ) : (
         <>
           {WillVistData.length > 0 ? (
+            <>
             <Table>
               <TableHead>
                 <TableRow>
@@ -99,16 +128,15 @@ const WillVist = () => {
               </TableHead>
               <TableBody>
                 {/* Map over WillVistData to display rows */}
-                {WillVistData.map((data, index) => (
+                {filteredData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
                     <TableCell>{data.Mobile_No}</TableCell>
                     <TableCell>
-                      {/* Date Picker: Allow user to select a date */}
                       <TextField
                         type="date"
                         value={data.visitDate ? new Date(data.visitDate).toISOString().slice(0, 10) : ''}
-                        onChange={(e) => handleDateChange(e, index)} // Update selected date for the student
+                        onChange={(e) => handleDateChange(e, index)}
                         variant="outlined"
                         size="small"
                         InputLabelProps={{
@@ -117,12 +145,11 @@ const WillVist = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      {/* Checkbox to indicate visited status */}
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={data.visited || false} // If visited is true, it will be checked
-                            onChange={(e) => handleVisitedChange(data.Name, e.target.checked, index)} // Toggle visited status
+                            checked={data.visited || false}
+                            onChange={(e) => handleVisitedChange(data.Name, e.target.checked, index)}
                             color="primary"
                           />
                         }
@@ -130,43 +157,41 @@ const WillVist = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      {/* Confirm Button */}
                       <Button
                         variant="contained"
                         color="primary"
-                        size='small'
+                        size="small"
                         onClick={() => handleConfirmUpdate(data.Name, data.visitDate, data.visited, index)}
                       >
                         Confirm
                       </Button>
                     </TableCell>
-
                     <TableCell>
-                    <NavLink to="/enquiry-form">
-                    <Button
-                      variant="contained"
-                      color="success"
-                      size="small"
-                      sx={{
-                        border: "1px solid transparent",
-                        textTransform: "none",
-                        "&:hover": {
-                          backgroundColor: "transparent",
-                          color: "success.main",
-                          borderColor: "success.main",
-                        },
-                      }}
-                      onClick={() => setCallingStudentName(data.Name)}
-                    >
-                      Enquiry
-                    </Button>
-                    </NavLink>
+                      <NavLink to="/enquiry-form">
+                        <Button
+                          variant="contained"
+                          color="success"
+                          size="small"
+                          sx={{
+                            border: "1px solid transparent",
+                            textTransform: "none",
+                            "&:hover": {
+                              backgroundColor: "transparent",
+                              color: "success.main",
+                              borderColor: "success.main",
+                            },
+                          }}
+                          onClick={() => setCallingStudentName(data.Name)}
+                        >
+                          Enquiry
+                        </Button>
+                      </NavLink>
                     </TableCell>
-
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            </>
           ) : (
             <Typography variant="h6" align="center" color="textSecondary">
               No Data available.

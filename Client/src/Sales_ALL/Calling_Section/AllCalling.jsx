@@ -6,6 +6,13 @@ import { Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, P
 
 const Calling = () => {
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
+
   //------------------------- State Variables -------------------------
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [selectedResponseIndex, setSelectedResponseIndex] = useState(null);
@@ -58,7 +65,6 @@ const Calling = () => {
       setModalOpen(false);
     }
   };
-  //-------------------------------------------------------------------
 
   //------------------------- Data Fetch Handler -------------------------
   const fetchCallingStudentData = async (page) => {
@@ -79,25 +85,26 @@ const Calling = () => {
       setLoading(false);  
     }
   };
-  //------------------------------------------------------------------
 
   //------------------------- Effects and Event Handlers -------------------------
   useEffect(() => {
     fetchCallingStudentData(page);
   }, [backendUrl, page]);
 
-  // Page change handler
-  const handlePageChange = (event, value) => {
-    setPage(value);
-  };
+const handlePageChange = (event, value) => {
+  setPage(value);
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth", 
+  });
+};
+
 
   // Search input change handler
   const handleSearchChange = (e) => {
-    const searchValue = e.target.value.toUpperCase(); // Convert search term to uppercase
+    const searchValue = e.target.value.toUpperCase(); 
     setSearchTerm(searchValue);
-    setPage(1);  // Reset to first page when search term changes
   };
-  //-------------------------------------------------------------------
 
 const filteredData = callingStudentDetails.filter((enquiry) => {
   const studentName = enquiry.Name ? enquiry.Name.toUpperCase() : ''; 

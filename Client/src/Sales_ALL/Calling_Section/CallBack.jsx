@@ -1,11 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography, TextField } from '@mui/material';
 
 const CallBack = () => {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
+
   const [CallBackData, setCallBackData] = useState([]);  // State to hold the callback data
   const [loading, setLoading] = useState(true);          // State for loading status
+  const [searchTerm, setSearchTerm] = useState("")
   const { backendUrl, account } = useContext(DataContext);  // Fetching data from context (backend URL & user account)
 
   //------------------------- Data Fetching -------------------------
@@ -31,9 +40,27 @@ const CallBack = () => {
     fetchCallBackData();  // Fetch callback data when component mounts
   }, [account.name, backendUrl]);
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  const filterData = CallBackData.filter((data) =>
+    data.Name.toLowerCase().includes(searchTerm.toLowerCase()))
+  
+
   //------------------------- Return JSX -------------------------
   return (
     <Box>
+
+      <TextField
+      placeholder='Search by Name'
+      label='Search by Name'
+      name='searchName'
+      fullWidth
+      value={searchTerm}
+      onChange={handleSearchChange}
+      />
+
       {/* Show loading spinner if data is being fetched */}
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" height="300px">
@@ -51,7 +78,7 @@ const CallBack = () => {
               </TableHead>
               <TableBody>
                 {/* Loop through each callback data */}
-                {CallBackData.map((data, index) => (
+                {filterData.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.Name}</TableCell>
                     <TableCell>{data.Mobile_No}</TableCell>

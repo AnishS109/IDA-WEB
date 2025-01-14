@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useContext } from 'react';
+import React, { useReducer, useState, useContext, useEffect } from 'react';
 import {
   Box,
   TextField,
@@ -22,6 +22,14 @@ import axios from "axios";
 import { DataContext } from '../../Context/DataProvider';
 
 const AddEnquiry = () => {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", 
+    });
+  }, []);
+
   //------------------ State Variables ------------------
   const [leadCategory, setLeadCategory] = useState('');
   const [educationLevel, setEducationLevel] = useState('');
