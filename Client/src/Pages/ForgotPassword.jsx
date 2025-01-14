@@ -158,16 +158,16 @@ const ForgotPassword = () => {
 >
   <Box
     sx={{
-      width: { xs: "90%", sm: "28rem" }, // Responsive width: 90% on small devices, 28rem on medium and larger
+      width: { xs: "80%", sm: "28rem" }, // Responsive width: 90% on small devices, 28rem on medium and larger
       bgcolor: "white",
       boxShadow: "0px 8px 40px rgba(0, 0, 0, 0.3)",
       borderRadius: "20px",
       textAlign: "center",
-      padding: { xs: "20px", sm: "40px 30px" }, // Smaller padding on small screens
-      position: "relative", // For positioning the loader
+      padding: { xs: "20px", sm: "40px 30px" },
+      position: "relative",
     }}
   >
-    {/* --------- Logo Section --------- */}
+    {/* Logo Section */}
     <img
       src={Logo}
       alt="IDA LOGO"
@@ -179,55 +179,37 @@ const ForgotPassword = () => {
       }}
     />
 
-    {/* --------- SUCCESS MESSAGE --------- */}
+
+    {/* Success & Error Messages */}
     {state.successMsg && (
-      <Typography sx={{ color: "green", mb: "5px" }}>
-        {state.successMsg}
-      </Typography>
+      <Typography sx={{ color: "green", mb: "5px" }}>{state.successMsg}</Typography>
     )}
-
-    {/* --------- ERROR MESSAGE --------- */}
     {state.errorMsg && (
-      <Typography sx={{ color: "red", mb: "5px" }}>
-        {state.errorMsg}
-      </Typography>
+      <Typography sx={{ color: "red", mb: "5px" }}>{state.errorMsg}</Typography>
     )}
 
-    {/* --------- LOADER (Centered) --------- */}
+    {/* Loader Section */}
     {loading && (
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          bgcolor: "rgba(255, 255, 255, 0.8)", // Slightly dim the background
-          borderRadius: "20px",
-        }}
-      >
-        <CircularProgress />
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+        <CircularProgress color="primary" />
       </Box>
     )}
 
-    {/* --------- Form Heading --------- */}
+    {/* Form Heading */}
     <Typography
       variant="h5"
       sx={{
         fontWeight: "600",
         color: "#333",
         marginBottom: "10px",
-        fontSize: { xs: "18px", sm: "24px" }, // Responsive font size
+        fontSize: { xs: "18px", sm: "24px" },
       }}
     >
       Recover Password
     </Typography>
     <Typography
       sx={{
-        fontSize: { xs: "12px", sm: "14px" }, // Responsive font size
+        fontSize: { xs: "12px", sm: "14px" },
         color: "#666",
         marginBottom: "30px",
       }}
@@ -235,7 +217,7 @@ const ForgotPassword = () => {
       Please enter your registered email to recover your password.
     </Typography>
 
-    {/* --------- Email Input --------- */}
+    {/* Email Input */}
     <TextField
       label="Email Address"
       name="email"
@@ -262,7 +244,7 @@ const ForgotPassword = () => {
       value={state.formData.email}
     />
 
-    {/* --------- OTP Input (if OTP visible) --------- */}
+    {/* OTP and New Password Inputs */}
     {state.otpVisible && (
       <>
         <TextField
@@ -290,7 +272,6 @@ const ForgotPassword = () => {
           onChange={handleChange}
           value={state.formData.otp}
         />
-
         <TextField
           label="New Password"
           name="password"
@@ -319,50 +300,30 @@ const ForgotPassword = () => {
       </>
     )}
 
-    {/* --------- VERIFY BUTTON (Conditional Rendering) --------- */}
-    {submitButton ? (
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{
-          padding: "12px 0px",
-          fontSize: { xs: "14px", sm: "16px" }, // Responsive font size
-          fontWeight: "bold",
-          textTransform: "none",
-          borderRadius: "30px",
-          marginBottom: "20px",
-        }}
-        aria-label="Submit"
-        onClick={handleSubmit}
-      >
-        Submit
-      </Button>
-    ) : (
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{
-          padding: "12px 0px",
-          fontSize: { xs: "14px", sm: "16px" }, // Responsive font size
-          fontWeight: "bold",
-          textTransform: "none",
-          borderRadius: "30px",
-          marginBottom: "20px",
-        }}
-        aria-label="Verify Email"
-        onClick={handleVerify}
-        disabled={loading}
-      >
-        Verify
-      </Button>
-    )}
+    {/* Verify/Submit Button */}
+    <Button
+      variant="contained"
+      color="primary"
+      fullWidth
+      sx={{
+        padding: "12px 0px",
+        fontSize: { xs: "14px", sm: "16px" },
+        fontWeight: "bold",
+        textTransform: "none",
+        borderRadius: "30px",
+        marginBottom: "20px",
+      }}
+      aria-label={submitButton ? "Submit" : "Verify Email"}
+      onClick={submitButton ? handleSubmit : handleVerify}
+      disabled={loading}
+    >
+      {submitButton ? "Submit" : "Verify"}
+    </Button>
 
-    {/* --------- Login Prompt --------- */}
+    {/* Login Prompt */}
     <Typography
       sx={{
-        fontSize: { xs: "12px", sm: "14px" }, // Responsive font size
+        fontSize: { xs: "12px", sm: "14px" },
         color: "#666",
       }}
     >
@@ -373,7 +334,7 @@ const ForgotPassword = () => {
           sx={{
             textTransform: "none",
             padding: 0,
-            fontSize: { xs: "12px", sm: "14px" }, // Responsive font size
+            fontSize: { xs: "12px", sm: "14px" },
             fontWeight: "bold",
             color: "#1976d2",
           }}
@@ -384,6 +345,7 @@ const ForgotPassword = () => {
     </Typography>
   </Box>
 </Box>
+
   );
 };
 

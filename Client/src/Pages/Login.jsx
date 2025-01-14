@@ -267,10 +267,21 @@ const Login = () => {
 
           {/* --------- ROUTES FOR REGISTER --------- */}
 
-          <Typography sx={{ color: "black" }}>
+          <Typography sx={{ color: "black", mt:"5px",mb:"10px" }}>
             Don't have an account?
             <NavLink to={"/register"}>
-              <Button>Sign up</Button>
+            <Button
+              size="small"
+              sx={{
+                textTransform: "none",
+                padding: 0,
+                fontSize: "14px",
+                fontWeight: "bold",
+                color: "#1976d2",
+              }}
+            >
+              Sign Up
+            </Button>
             </NavLink>
           </Typography>
 
