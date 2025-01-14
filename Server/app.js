@@ -37,4 +37,3 @@ if (cluster.isMaster) {
 } else {
   startServer();
 }
-
