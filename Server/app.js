@@ -1,11 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from 'dotenv';
+
 import cluster from 'cluster';
 import os from 'os';
 
 import ConnectionDB from "./database/database.js";
+
 import router from "./routes/router.js";
+import HRrouter from "./routes/HRrouter.js";
 
 dotenv.config();
 
@@ -15,6 +18,7 @@ const numCPUs = os.cpus().length;
 const startServer = () => {
   app.use(cors());
   app.use("/", router);
+  app.use("/HR", HRrouter)
 
   const PORT = process.env.BACKEND_PORT || 3000; // Ensure PORT is set correctly
   app.listen(PORT, () => {

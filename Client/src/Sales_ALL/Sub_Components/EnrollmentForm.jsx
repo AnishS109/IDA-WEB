@@ -372,7 +372,7 @@ const EnrollmentForm = () => {
             handleMailCloseModal()
           }
 
-          Navigate("/Sales-Home")
+          Navigate("/Sales/Home")
         }
       } catch (error) {
         console.log(

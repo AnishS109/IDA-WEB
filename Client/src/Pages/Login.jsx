@@ -1,5 +1,5 @@
 import { Box, Button, TextField, Typography, CircularProgress } from "@mui/material";
-import { useContext, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../Context/DataProvider";
@@ -85,21 +85,13 @@ const Login = () => {
         sessionStorage.setItem("account", JSON.stringify(accountData));        
 
         if (Data.role === "Admin") {
-          setTimeout(() => {
             navigate("/Admin-Home");
-          }, 1000);
         } else if (Data.role === "HR") {
-          setTimeout(() => {
-            navigate("/HR-Home");
-          }, 1000);
+            navigate("/HR/Home");
         } else if (Data.role === "Faculty") {
-          setTimeout(() => {
             navigate("/Faculty-Home");
-          }, 1000);
         } else if (Data.role === "Sales") {
-          setTimeout(() => {
-            navigate("/Sales-Home");
-          }, 1000);
+            navigate("/Sales/Home");
         } else {
           if (Data.msg === "Role is not found") {
             navigate("/");
@@ -125,6 +117,13 @@ const Login = () => {
       dispatchState({ type: "SET_LOADING", payload: false }); // Stop loading
     }
   };
+
+  useEffect(() => {
+    dispatchState({
+      type: "SET_ERROR",
+      payload: "",
+    })
+  },[state.userName,state.password])
 
   const Logo =
     "https://instadotanalytics.com/wp-content/uploads/2023/05/WhatsApp_Image_2024-07-11_at_15.57.22_70256fed-removebg-preview.png";

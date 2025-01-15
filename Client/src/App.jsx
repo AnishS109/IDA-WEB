@@ -6,6 +6,9 @@ import EnrollmentForm from "./Sales_ALL/Sub_Components/EnrollmentForm.jsx";
 import AddEnquiry from "./Sales_ALL/components/AddEnquiry.jsx";
 import ScrollToTopOnRouteChange from "./ScrollToTop.jsx";
 import ForgotPassword from "./Pages/ForgotPassword.jsx";
+import HRDataProvider from "./Context/HRDataProvider.jsx";
+import Company_Form from "./HR_ALL/sub_components/form/Company_Form.jsx"
+import College_Form from "./HR_ALL/sub_components/form/College_Form.jsx"
 
 // Lazy-loaded components
 const Home = lazy(() => import("./Pages/Home"));
@@ -25,6 +28,7 @@ const App = () => {
 
   return (
     <DataProvider>
+      <HRDataProvider>
       <BrowserRouter>
         {/* Place ScrollToTopOnRouteChange inside BrowserRouter */}
         <ScrollToTopOnRouteChange />
@@ -43,7 +47,7 @@ const App = () => {
               <Route path="/Admin-Home" element={<AdminHome />} />
 
               {/* ------------ FOR SALES ------------ */}
-              <Route path="/Sales-Home" element={<SalesHome />} />
+              <Route path="/Sales/Home" element={<SalesHome />} />
               <Route path="/enrollment-form" element={<EnrollmentForm />} />
               <Route path="/enquiry-form" element={<AddEnquiry />} />
 
@@ -51,12 +55,15 @@ const App = () => {
               <Route path="/Faculty-Home" element={<FacultyHome />} />
 
               {/* ------------ FOR HR ------------ */}
-              <Route path="/HR-Home" element={<HrHome />} />
+              <Route path="/HR/Home" element={<HrHome />} />
+              <Route path="/Company/form" element={<Company_Form />} />
+              <Route path="/College/form" element={<College_Form />} />
             </Route>
 
           </Routes>
         </Suspense>
       </BrowserRouter>
+      </HRDataProvider>
     </DataProvider>
   );
 };
