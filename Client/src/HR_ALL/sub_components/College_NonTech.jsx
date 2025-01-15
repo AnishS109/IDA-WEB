@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios';
 import { DataContext } from '../../Context/DataProvider';
-import CollegeCard from './card/collegeCard';
+import CollegeCard from "./card/CollegeCardd";
 
 const College_NonTech = () => { 
 

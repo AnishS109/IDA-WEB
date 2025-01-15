@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
-import CollegeCard from './card/collegeCard'
+import CollegeCard from './card/CollegeCardd'
 import { DataContext } from '../../Context/DataProvider'
 import axios from "axios"
 
