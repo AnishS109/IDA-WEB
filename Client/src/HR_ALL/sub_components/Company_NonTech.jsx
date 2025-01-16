@@ -1,12 +1,11 @@
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
-import CompanyCard from './card/companyCard';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import CompanyCard from './card/CompanyCard';
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
 
 const Company_NonTech = () => {
-
   const [companyNonData, setCompanyNonData] = useState(() => []); 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -16,7 +15,7 @@ const Company_NonTech = () => {
   useEffect(() => {
     const fetchNonTechCompanyData = async () => {
       setLoading(true);
-      setErrorMsg(''); 
+      setErrorMsg('');
       const serverData = {
         HRName: account.name,
         role: role,
@@ -31,7 +30,7 @@ const Company_NonTech = () => {
           setCompanyNonData(response.data);
         }
       } catch (error) {
-        const message = error?.response?.data?.message;
+        const message = error?.response?.data?.message || 'An error occurred while fetching data.';
         setErrorMsg(message);
       } finally {
         setLoading(false);
@@ -42,67 +41,101 @@ const Company_NonTech = () => {
   }, [backendUrl, account.name, role]);
 
   return (
-    <>
-
-  <NavLink to={"/Company/form"}>
-  <Button
-    variant="contained"
-    sx={{
-      ml:{xs:"30px", sm:"0px",},
-      width:{xs:"70vw", sm:"58vw", md:"75vw"},
-      backgroundColor: 'rgb(58, 164, 250)',
-      color: '#ffffff',
-      padding: '10px 0',
-      fontWeight: 'bold',
-      textTransform: 'none',
-      fontSize: '16px',
-      borderRadius: '8px',
-      boxShadow: '0px 4px 8px rgba(58, 164, 250, 0.3)',
-      transition: 'all 0.3s ease',
-      '&:hover': {
-        backgroundColor: '#f5f5f5',
-        color: '#000000',
-        boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)',
-      },
-      '&:active': {
-        transform: 'scale(0.98)',
-      },
-    }}
-  >
-    Add Company
-  </Button>
-  </NavLink>
-
-    {loading ? (
-      <Box display="flex" justifyContent="center" alignItems="center" height="300px">
-        <CircularProgress />
-      </Box>
-    ) : errorMsg ? (
-      <Typography variant="h6" align="center" color="textSecondary">
-        {errorMsg}
-      </Typography>
-    ) : companyNonData.length > 0 ? (
     <Box
       sx={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-        gap: 1,
-        justifyContent: "center", 
-        padding: 2,
+        backgroundColor: '#f4f5f7',
+        minHeight: '100vh',
+        padding: { xs: '10px', sm: '20px 30px' }, // Responsive padding
       }}
     >
-      {companyNonData.map((data) => (
-        <CompanyCard key={data._id} data={data} />
-      ))}
+      {/* Header Section */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '20px',
+          flexWrap: 'wrap',
+          gap: '10px',
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 'bold',
+            color: '#333',
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: { xs: '1.5rem', sm: '2rem' }, // Responsive font size
+          }}
+        >
+          Non-Tech Companies
+        </Typography>
+        <NavLink to="/Company/form" style={{ textDecoration: 'none' }}>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: '#3a98f0',
+              color: '#fff',
+              fontWeight: 'bold',
+              padding: '10px 20px',
+              fontSize: { xs: '14px', sm: '16px' }, // Responsive button font size
+              borderRadius: '8px',
+              boxShadow: '0px 4px 6px rgba(58, 164, 250, 0.3)',
+              '&:hover': {
+                backgroundColor: '#357edd',
+              },
+            }}
+          >
+            Add Company
+          </Button>
+        </NavLink>
+      </Box>
+
+      {/* Content Section */}
+      {loading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: '300px' }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : errorMsg ? (
+        <Typography
+          variant="h6"
+          align="center"
+          color="error"
+          sx={{ marginTop: '20px' }}
+        >
+          {errorMsg}
+        </Typography>
+      ) : companyNonData.length > 0 ? (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', // Responsive grid layout
+            gap: '20px',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+        >
+          {companyNonData.map((data) => (
+            <CompanyCard key={data._id} data={data} />
+          ))}
+        </Box>
+      ) : (
+        <Typography
+          variant="h6"
+          align="center"
+          color="textSecondary"
+          sx={{ marginTop: '20px' }}
+        >
+          No companies found.
+        </Typography>
+      )}
     </Box>
-    ) : (
-      <Typography variant="h6" align="center" color="textSecondary">
-        No companies found.
-      </Typography>
-    )}
+  );
+};
 
-    </>
-  )
-}
-
-export default Company_NonTech
+export default Company_NonTech;

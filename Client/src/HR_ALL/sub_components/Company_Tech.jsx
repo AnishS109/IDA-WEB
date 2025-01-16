@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import CompanyCard from './card/companyCard';
+import CompanyCard from './card/CompanyCard';
 import { DataContext } from '../../Context/DataProvider';
 import axios from 'axios';
 
 const Company_Tech = () => {
-  const [companyData, setCompanyData] = useState(() => []); // Cleaner initialization
+  const [companyData, setCompanyData] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -15,7 +15,7 @@ const Company_Tech = () => {
   useEffect(() => {
     const fetchTechCompanyData = async () => {
       setLoading(true);
-      setErrorMsg(''); // Reset error message before fetching
+      setErrorMsg(''); 
       const serverData = {
         HRName: account.name,
         role: role,
@@ -38,31 +38,51 @@ const Company_Tech = () => {
     };
 
     fetchTechCompanyData();
-  }, [backendUrl, account.name, role]); 
+  }, [backendUrl, account.name, role]);
+
   return (
-    <>
-      <Box display="flex" justifyContent="center" mb={3}>
+    <Box
+      sx={{
+        backgroundColor: '#f4f5f7',
+        minHeight: '100vh',
+        padding: { xs: '10px', sm: '20px 30px' }, // Responsive padding
+      }}
+    >
+      {/* Header Section */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '20px',
+          flexWrap: 'wrap',
+          gap: '10px',
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 'bold',
+            color: '#333',
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: { xs: '1.5rem', sm: '2rem' }, // Responsive font size
+          }}
+        >
+          Tech Companies
+        </Typography>
         <NavLink to="/Company/form" style={{ textDecoration: 'none' }}>
           <Button
             variant="contained"
             sx={{
-              width: { xs: '70vw', sm: '58vw', md: '75vw' },
-              backgroundColor: 'rgb(58, 164, 250)',
-              color: '#ffffff',
-              padding: '10px 0',
+              backgroundColor: '#3a98f0',
+              color: '#fff',
               fontWeight: 'bold',
-              textTransform: 'none',
-              fontSize: '16px',
+              padding: '10px 20px',
+              fontSize: { xs: '14px', sm: '16px' }, // Responsive button font size
               borderRadius: '8px',
-              boxShadow: '0px 4px 8px rgba(58, 164, 250, 0.3)',
-              transition: 'all 0.3s ease',
+              boxShadow: '0px 4px 6px rgba(58, 164, 250, 0.3)',
               '&:hover': {
-                backgroundColor: '#f5f5f5',
-                color: '#000000',
-                boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)',
-              },
-              '&:active': {
-                transform: 'scale(0.98)', // Slight scaling effect on click
+                backgroundColor: '#357edd',
               },
             }}
           >
@@ -71,33 +91,50 @@ const Company_Tech = () => {
         </NavLink>
       </Box>
 
+      {/* Content Section */}
       {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: '300px' }}
+        >
           <CircularProgress />
         </Box>
       ) : errorMsg ? (
-        <Typography variant="h6" align="center" color="textSecondary">
+        <Typography
+          variant="h6"
+          align="center"
+          color="error"
+          sx={{ marginTop: '20px' }}
+        >
           {errorMsg}
         </Typography>
       ) : companyData.length > 0 ? (
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap:"wrap",
-          justifyContent: "center", 
-        }}
-      >
-        {companyData.map((data) => (
-          <CompanyCard key={data._id} data={data} />
-        ))}
-      </Box>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', // Responsive grid layout
+            gap: '20px',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+        >
+          {companyData.map((data) => (
+            <CompanyCard key={data._id} data={data} />
+          ))}
+        </Box>
       ) : (
-        <Typography variant="h6" align="center" color="textSecondary">
+        <Typography
+          variant="h6"
+          align="center"
+          color="textSecondary"
+          sx={{ marginTop: '20px' }}
+        >
           No companies found.
         </Typography>
       )}
-
-    </>
+    </Box>
   );
 };
 

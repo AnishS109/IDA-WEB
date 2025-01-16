@@ -1,7 +1,10 @@
-import React, { useContext, useState } from "react";
-import { AppBar, Box, Button, Toolbar, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { AppBar, Box, Button, Toolbar, Typography, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Badge } from "@mui/material";
 import { DataContext } from "../Context/DataProvider";
 import { useNavigate } from "react-router-dom";
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import { HRDataContext } from "../Context/HRDataProvider";
+
 
 const Navbar = () => {
   const today = new Date().toLocaleDateString("en-IN", {
@@ -11,16 +14,22 @@ const Navbar = () => {
     year: "numeric",
   });
 
+    const { events } = useContext(HRDataContext);
+    const { PressChromeBackButton, setPressChromeBackButton } = useContext(DataContext);
+
   const navigate = useNavigate();
 
   const Logo =
     "https://instadotanalytics.com/wp-content/uploads/2023/05/WhatsApp_Image_2024-07-11_at_15.57.22_70256fed-removebg-preview.png";
 
-  const { account, setAccount } = useContext(DataContext);
+  const { account, setAccount, role } = useContext(DataContext);
 
   // State for controlling the modal visibility
   const [open, setOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(null)
 
+  
+  
   // Open the modal
   const handleLogoutClick = () => {
     setOpen(true);
@@ -31,13 +40,25 @@ const Navbar = () => {
     localStorage.clear()
     setAccount({ userName: "", name: "" });
     setOpen(false);
+    setPressChromeBackButton(false)
     navigate("/"); 
   };
+
+  useEffect(() => {
+    if (PressChromeBackButton) {
+      handleConfirmLogout()
+    }
+  }, [PressChromeBackButton]);
 
   // Cancel logout
   const handleCancelLogout = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    const notificationCounts = events ? events.length : 0
+    setNotificationCount(notificationCounts)
+  },[events.length])
 
   return (
     <Box>
@@ -104,6 +125,14 @@ const Navbar = () => {
           >
             {today}
           </Typography>
+
+          {account.name && role === "HR" && (
+          <Box onClick={() => navigate("/Notification")} sx={{ cursor: "pointer" }}>
+          <Badge badgeContent={notificationCount} color="error">
+            <NotificationsActiveIcon/>
+          </Badge>
+          </Box>
+          )}
 
           {account.name && (
             <Button

@@ -1,20 +1,19 @@
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { DataContext } from '../../Context/DataProvider';
-import CollegeCard from "./card/CollegeCardd";
+import CollegeCard from './card/CollegeCardd';
 
 const College_NonTech = () => { 
-
-  const [companyData, setCompanyData] = useState(() => []); // Cleaner initialization
+  const [companyData, setCompanyData] = useState([]); // Cleaner initialization
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   const { backendUrl, account, role } = useContext(DataContext);
 
   useEffect(() => {
-    const fetchTechCompanyData = async () => {
+    const fetchCompanyData = async () => {
       setLoading(true);
       setErrorMsg(''); // Reset error message before fetching
       const serverData = {
@@ -31,76 +30,111 @@ const College_NonTech = () => {
           setCompanyData(response.data);
         }
       } catch (error) {
-        const message = error?.response?.data?.message;
+        const message = error?.response?.data?.message || 'Failed to fetch data. Please try again.';
         setErrorMsg(message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTechCompanyData();
+    fetchCompanyData();
   }, [backendUrl, account.name, role]);
 
   return (
-  <>
+    <Box
+      sx={{
+        backgroundColor: '#f4f5f7',
+        minHeight: '100vh',
+        padding: { xs: '10px', sm: '20px 30px' }, // Adjusted padding for responsiveness
+      }}
+    >
+      {/* Header Section */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '20px',
+          flexWrap: 'wrap',
+          gap: '10px',
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 'bold',
+            color: '#333',
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: { xs: '1.5rem', sm: '2rem' }, // Responsive font size for header
+          }}
+        >
+          Non-Tech Colleges
+        </Typography>
+        <NavLink to="/College/form" style={{ textDecoration: 'none' }}>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: '#3a98f0',
+              color: '#fff',
+              fontWeight: 'bold',
+              padding: '10px 20px',
+              fontSize: { xs: '14px', sm: '16px' }, // Responsive button font size
+              borderRadius: '8px',
+              boxShadow: '0px 4px 6px rgba(58, 164, 250, 0.3)',
+              '&:hover': {
+                backgroundColor: '#357edd',
+              },
+            }}
+          >
+            Add College
+          </Button>
+        </NavLink>
+      </Box>
 
-  <NavLink to={"/College/form"}>
-  <Button
-    variant="contained"
-    sx={{
-      ml:{xs:"30px", sm:"0px",},
-      width:{xs:"70vw", sm:"58vw", md:"75vw"},
-      backgroundColor: 'rgb(58, 164, 250)',
-      color: '#ffffff',
-      padding: '10px 0',
-      fontWeight: 'bold',
-      textTransform: 'none',
-      fontSize: '16px',
-      borderRadius: '8px',
-      boxShadow: '0px 4px 8px rgba(58, 164, 250, 0.3)',
-      transition: 'all 0.3s ease',
-      '&:hover': {
-        backgroundColor: '#f5f5f5',
-        color: '#000000',
-        boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)',
-      },
-      '&:active': {
-        transform: 'scale(0.98)', // Slight scaling effect on click
-      },
-    }}
-  >
-    Add College
-  </Button>
-  </NavLink>
-
-  {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+      {/* Content Section */}
+      {loading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: '300px' }}
+        >
           <CircularProgress />
         </Box>
       ) : errorMsg ? (
-        <Typography variant="h6" align="center" color="textSecondary">
+        <Typography
+          variant="h6"
+          align="center"
+          color="error"
+          sx={{ marginTop: '20px' }}
+        >
           {errorMsg}
         </Typography>
       ) : companyData.length > 0 ? (
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap:"wrap",
-          justifyContent: "center", 
-        }}
-      >
-        {companyData.map((data) => (
-          <CollegeCard key={data._id} data={data} />
-        ))}
-      </Box>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', // Responsive grid layout
+            gap: '20px',
+            justifyContent: 'center',
+          }}
+        >
+          {companyData.map((data) => (
+            <CollegeCard key={data._id} data={data} />
+          ))}
+        </Box>
       ) : (
-        <Typography variant="h6" align="center" color="textSecondary">
-          No companies found.
+        <Typography
+          variant="h6"
+          align="center"
+          color="textSecondary"
+          sx={{ marginTop: '20px' }}
+        >
+          No colleges found.
         </Typography>
       )}
+    </Box>
+  );
+};
 
-  </>
-  )
-}
-
-export default College_NonTech
+export default College_NonTech;

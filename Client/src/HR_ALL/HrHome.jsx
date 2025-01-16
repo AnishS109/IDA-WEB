@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Layout from "../Layout/Layout";
 import { Button, Grid } from "@mui/material";
@@ -8,8 +9,31 @@ import College from "./components/College"
 
 import SchoolIcon from '@mui/icons-material/School';
 import ApartmentIcon from '@mui/icons-material/Apartment';
+import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
+import AddEvents from "./components/AddEvents";
+import { DataContext } from "../Context/DataProvider";
 
 const HrHome = () => {
+
+  const location = useLocation();
+
+  const navigate = useNavigate()
+
+  const {setPressChromeBackButton, PressChromeBackButton} = useContext(DataContext)
+
+  useEffect(() => {
+    const handleBackButton = () => {
+      if (location.pathname === "/HR/Home" && !PressChromeBackButton) {
+        setPressChromeBackButton(true);
+      }
+    };
+  
+    window.addEventListener("popstate", handleBackButton);
+  
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [location, PressChromeBackButton]);
 
   const [selectedOptions, setSelectedOption] = useState(sessionStorage.getItem("selectedOptions") || "Company");
 
@@ -20,6 +44,7 @@ const HrHome = () => {
   const options = [
     {label:"Company", icon: <ApartmentIcon/>, key:"Company"},
     {label:"College", icon: <SchoolIcon/>, key:"College"},
+    {label:"Event", icon: <NotificationAddIcon/>, key:"Event"},
   ]
 
   const Content = () => {
@@ -28,6 +53,9 @@ const HrHome = () => {
     }
     else if (selectedOptions === "College"){
       return <College/>
+    }
+    else if (selectedOptions === "Event"){
+      return <AddEvents/>
     }
   }
 
