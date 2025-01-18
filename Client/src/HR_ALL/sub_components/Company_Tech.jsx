@@ -113,11 +113,10 @@ const Company_Tech = () => {
       ) : companyData.length > 0 ? (
         <Box
           sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', // Responsive grid layout
-            gap: '20px',
-            justifyContent: 'center',
-            padding: '20px',
+            display:"flex",
+            justifyContent:"center",
+            flexWrap:"wrap",
+            padding: '30px',
           }}
         >
           {companyData.map((data) => (

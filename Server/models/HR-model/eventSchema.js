@@ -24,6 +24,9 @@ const eventschema = mongoose.Schema({
   },
   eventVisited:{
     type:Boolean
+  },
+  feedBack:{
+    type:String
   }
 })
 

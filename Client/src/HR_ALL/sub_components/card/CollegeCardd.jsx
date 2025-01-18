@@ -9,7 +9,7 @@ const CollegeCard = ({data}) => {
         maxWidth: 400,
         minWidth:300,
         width:{xs:"85%", sm:"30vw"},
-        margin: "20px auto",
+        margin: "50px auto",
         padding: "10px",
         borderRadius: "16px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",

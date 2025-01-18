@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { DataContext } from '../../Context/DataProvider';
+import { DataContext } from '../../../Context/DataProvider';
 import {
   Box,
   Button,
@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import axios from 'axios';
+import Layout from '../../../Layout/Layout';
 
 const AddEvents = () => {
   const { account, role, backendUrl } = useContext(DataContext);
@@ -66,6 +67,7 @@ const AddEvents = () => {
   };
 
   return (
+    <Layout>
     <Box
       sx={{
         maxWidth: { xs: '95%', sm: '80%', md: '60%', lg: '50%' },
@@ -198,6 +200,7 @@ const AddEvents = () => {
         </Grid>
       </form>
     </Box>
+    </Layout>
   );
 };
 

@@ -113,10 +113,10 @@ const College_NonTech = () => {
       ) : companyData.length > 0 ? (
         <Box
           sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', // Responsive grid layout
-            gap: '20px',
-            justifyContent: 'center',
+            display:"flex",
+            justifyContent:"center",
+            flexWrap:"wrap",
+            padding: '30px',
           }}
         >
           {companyData.map((data) => (

@@ -2,7 +2,7 @@ import express from "express"
 import cors from 'cors'
 import { CollegeData, CompanyData, fetchNonTechCollege, fetchNonTechCompany, fetchTechCollege, fetchTechCompany } from "../controllers/HR/companyCollege.js"
 import { HRAuthorisation } from "../utils/HRauth.js"
-import { addEventNotification, fetchEventData, setEventVisit } from "../controllers/HR/eventNotification.js"
+import { addEventNotification, addFeedBackEvent, fetchEventData, fetchVisitedEventData, setEventVisit } from "../controllers/HR/eventNotification.js"
 
 const HRrouter = express.Router()
 
@@ -20,5 +20,7 @@ HRrouter.get("/NonTech-College-Details",HRAuthorisation, fetchNonTechCollege)
 HRrouter.post("/Add-Events", HRAuthorisation, addEventNotification)
 HRrouter.post("/Set-Event-Visited", HRAuthorisation, setEventVisit)
 HRrouter.get("/Events-Data", HRAuthorisation, fetchEventData)
+HRrouter.get("/Visited-Events-Data",HRAuthorisation, fetchVisitedEventData)
+HRrouter.post("/Set-Event-FeedBack", HRAuthorisation, addFeedBackEvent)
 
 export default HRrouter

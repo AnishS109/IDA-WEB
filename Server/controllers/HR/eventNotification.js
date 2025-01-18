@@ -63,17 +63,8 @@ export const fetchEventData = async (req, res) => {
       return res.status(400).json({ message: "Something Went Wrong. Please login again krro!" });
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    await eventSchema.deleteMany({
-      HRName,
-      eventDate: { $lt: today }, 
-    });
-
     const eventData = await eventSchema.find({
       HRName,
-      // eventDate: { $gte: today }, 
     });
 
     if (!eventData || eventData.length === 0) {
@@ -86,3 +77,49 @@ export const fetchEventData = async (req, res) => {
     return res.status(500).json({ message: "Something went wrong. Please try again later." });
   }
 };
+
+// -------------  FETCHING EVENT DATA [ONLY VISITED EVENTS] (GET REQUEST) --------------
+
+export const fetchVisitedEventData = async(req, res) => {
+  const {HRName} = req.query
+
+if(!HRName){
+  return res.status(400).json({message:"Something Went Wrong! Please Login Again"})
+}
+
+try{
+  const visitedEventData = await eventSchema.find({HRName, 
+  eventVisited:true})
+
+if(!visitedEventData){
+  return res.status(404).json({message:"No Data is available"})
+}
+
+  return res.status(200).json(visitedEventData)
+}
+catch(error){
+  console.log("ERROR WHILE FETCHING VISITED DATA:", error)
+  return res.status(500).json({message:"ERROR WHILE FETCHING VISITED DATA"})
+  }
+}
+
+// -------------  SET EVENT FEEDBACK (POST REQUEST) --------------
+
+export const addFeedBackEvent = async(req, res) => {
+  const {HRName, feedBack, eventName, eventPlaceName} = req.body
+
+  if(!HRName){
+    return res.status(400).json({message:"Something Went Wrong! Please Login Again"})
+  }
+
+  try {
+    const feedbackEvent = await eventSchema.findOne({HRName, eventName, eventPlaceName})
+
+    feedbackEvent.feedBack = feedBack
+    await feedbackEvent.save()
+    return res.status(200).json({message:"FeedBack Added Successfully"})
+  } catch (error) {
+    console.log("ERROR WHILE POSTING FEEDBACK DATA:", error)
+    return res.status(500).json({message:"ERROR WHILE POSTING FEEDBACK DATA:"})
+  }
+}

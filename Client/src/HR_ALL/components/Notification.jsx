@@ -94,6 +94,15 @@ const Notification = () => {
     }
   };
 
+  const filteredEvents = events.filter(event => {
+    const eventDate = new Date(event.eventDate);
+    const currentDate = new Date();
+
+    eventDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+    return eventDate >= currentDate;
+  });
+
   return (
     <Layout>
       <Box
@@ -112,8 +121,8 @@ const Notification = () => {
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
           <CircularProgress color="primary" />
         </Box>
-        ) : events.length > 0 ? (
-          events.map((event, index) => (
+        ) : filteredEvents.length > 0 ? (
+          filteredEvents.map((event, index) => (
             <Card
               key={index}
               sx={{

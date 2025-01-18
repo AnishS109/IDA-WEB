@@ -10,14 +10,36 @@ import College from "./components/College"
 import SchoolIcon from '@mui/icons-material/School';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
-import AddEvents from "./components/AddEvents";
+import Events from "./components/Events";
 import { DataContext } from "../Context/DataProvider";
 
 const HrHome = () => {
 
-  const location = useLocation();
+  const [openEvents, setOpenEvents] = useState(() => {
+    const savedOpenEvent = sessionStorage.getItem("openEvents");
+    return savedOpenEvent ? JSON.parse(savedOpenEvent) : true;
+  });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const firstVisit = sessionStorage.getItem("hasVisited");
+
+    if (!firstVisit) {
+      sessionStorage.setItem("hasVisited", "true");
+      setTimeout(() => {
+        navigate("/Notification");
+      }, 1000);
+    } else {
+      setOpenEvents(false);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    sessionStorage.setItem("openEvents", JSON.stringify(openEvents));
+  }, [openEvents]);
+
+  const location = useLocation();
 
   const {setPressChromeBackButton, PressChromeBackButton} = useContext(DataContext)
 
@@ -55,7 +77,7 @@ const HrHome = () => {
       return <College/>
     }
     else if (selectedOptions === "Event"){
-      return <AddEvents/>
+      return <Events/>
     }
   }
 

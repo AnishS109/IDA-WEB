@@ -10,6 +10,7 @@ import HRDataProvider from "./Context/HRDataProvider.jsx";
 import Company_Form from "./HR_ALL/sub_components/form/Company_Form.jsx"
 import College_Form from "./HR_ALL/sub_components/form/College_Form.jsx"
 import Notification from "./HR_ALL/components/Notification.jsx";
+import AddEvents from "./HR_ALL/sub_components/form/AddEvents.jsx";
 
 // Lazy-loaded components
 const Home = lazy(() => import("./Pages/Home"));
@@ -60,6 +61,7 @@ const App = () => {
               <Route path="/Company/form" element={<Company_Form />} />
               <Route path="/College/form" element={<College_Form />} />
               <Route path="/Notification" element={<Notification />} />
+              <Route path="/Add/Events" element={<AddEvents />} />
             </Route>
 
           </Routes>
