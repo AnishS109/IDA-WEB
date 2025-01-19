@@ -265,8 +265,8 @@ const Event = () => {
       {/* ------------------------------ MODAL SECTION -------------------------------- */}
       {/* ------------------------------ MODAL SECTION -------------------------------- */}
 
-
-      {/* --------------------------- MODAL FOR ADDING FEEDBACK ----------------------------- */}
+      {/* ------------------------ MODAL FOR ADDING FEEDBACK ----------------------- */}
+      {/* ------------------------ MODAL FOR ADDING FEEDBACK ----------------------- */}
 
       <Dialog
       open={addFeedBackModal}
@@ -369,8 +369,6 @@ const Event = () => {
       </DialogActions>
     </Dialog>
 
-
-
     {/* --------------------------- MODAL FOR DETAIL FEEDBACK ----------------------------- */}
     {/* --------------------------- MODAL FOR DETAIL FEEDBACK ----------------------------- */}
 
@@ -381,7 +379,7 @@ const Event = () => {
     '& .MuiDialog-paper': {
       borderRadius: 6,
       boxShadow: '0px 6px 15px rgba(0, 0, 0, 0.2)',
-      minWidth: '40vw', // Set the minimum width to 40vw
+      minWidth: '40vw',
     },
   }}
 >
@@ -499,21 +497,19 @@ const Event = () => {
       </>
     )}
   </DialogContent>
-  <DialogActions sx={{mr:"10px"}}>
-    <Button 
-    variant="outlined" 
-    sx={{
-      ':hover': {
-        variant: 'contained',
-          backgroundColor: 'primary.main',
-          color: 'white',
-        },
-      }} 
-    onClick={handleEventDetailModal}>Close</Button>
-  </DialogActions>
-</Dialog>
-
-    
+    <DialogActions sx={{mr:"10px"}}>
+      <Button 
+      variant="outlined" 
+      sx={{
+        ':hover': {
+          variant: 'contained',
+            backgroundColor: 'primary.main',
+            color: 'white',
+          },
+        }} 
+      onClick={handleEventDetailModal}>Close</Button>
+    </DialogActions>
+  </Dialog>
 
     </Box>
 

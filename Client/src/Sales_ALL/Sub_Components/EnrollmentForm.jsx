@@ -421,7 +421,25 @@ const EnrollmentForm = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Button variant="contained" component="label" fullWidth>
+              <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    // marginTop: 2,
+                  }}
+                >
+                  <Avatar
+                    src={handlePhotoPreview()}
+                    alt="Uploaded Photo"
+                    sx={{ width: 100, height: 100 }}
+                  />
+                </Box>
+                <Box sx={{
+                  display:"flex",
+                  justifyContent:"space-between"
+                }}>
+                <Button variant="contained" component="label">
                   Select Photo
                   <input
                     type="file"
@@ -431,23 +449,11 @@ const EnrollmentForm = () => {
                     onChange={handleFileChange}
                   />
                 </Button>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: 2,
-                  }}
-                >
-                  <Avatar
-                    src={handlePhotoPreview()}
-                    alt="Uploaded Photo"
-                    sx={{ width: 100, height: 100 }}
-                  />
-                </Box>
-                <Button onClick={handleUploadStudnetImage}>
+
+                <Button variant="contained" onClick={handleUploadStudnetImage}>
                   Upload Image
                 </Button>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -628,19 +634,7 @@ const EnrollmentForm = () => {
               </FormControl>
             </Grid>
               <Grid item xs={12} sm={4}>
-                <Button variant="contained" component="label" fullWidth>
-                  Select {formData.document || "Document"} Image
-                  <input
-                    type="file"
-                    hidden
-                    name="documentFoto"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                  />
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Box
+              <Box
                   sx={{
                     display: "flex",
                     justifyContent: "center",
@@ -658,10 +652,30 @@ const EnrollmentForm = () => {
                     }}
                   />
                 </Box>
-                <Button onClick={handleUploadDocumentImage}>
+                </Grid>
+                <Box sx={{
+                  display:'flex', 
+                  justifyContent:{xs:"center", sm:"space-between"}, 
+                  flexDirection:{xs:"column",sm:"row", md:"row"},
+                  }}>
+                <Grid item xs={12} sm={4}>
+                <Button component="label" variant="contained">
+                  Select Document Image
+                  <input
+                    type="file"
+                    hidden
+                    name="documentFoto"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                </Button>
+              </Grid>
+              <Grid item xs={12} >
+                <Button variant="contained" onClick={handleUploadDocumentImage}>
                   Upload Image
                 </Button>
               </Grid>
+              </Box>
           </Box>
 
           {/*--------------------------- Section 4: Emergency Contact ---------------------------*/}
@@ -833,8 +847,21 @@ const EnrollmentForm = () => {
 
               {paymentMode && (
                 <Grid item xs={12} sm={6}>
-                <Button variant="contained" component="label" fullWidth>
-                  Select Payment Screenshot
+
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                  <Avatar
+                    src={handlePaymentScreenshotPreview()}
+                    alt="Payment Screenshot"
+                    sx={{ width: 100, height: 100 }}
+                  />
+                </Box>
+
+                <Box sx={{
+                  display:"flex",
+                  justifyContent:"space-between"
+                }}>
+                <Button variant="contained" component="label">
+                  Select Screenshot
                   <input
                     type="file"
                     hidden
@@ -843,16 +870,11 @@ const EnrollmentForm = () => {
                     onChange={handleFileChange}
                     />
                 </Button>
-                <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-                  <Avatar
-                    src={handlePaymentScreenshotPreview()}
-                    alt="Payment Screenshot"
-                    sx={{ width: 100, height: 100 }}
-                  />
-                </Box>
-                <Button onClick={handleUploadPaymentSSImage}>
+
+                <Button variant="contained" onClick={handleUploadPaymentSSImage}>
                   Upload Image
                 </Button>
+                </Box>
               </Grid>
               )}
               
