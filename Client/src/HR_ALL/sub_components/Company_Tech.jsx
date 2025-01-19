@@ -116,7 +116,7 @@ const Company_Tech = () => {
             display:"flex",
             justifyContent:"center",
             flexWrap:"wrap",
-            padding: '30px',
+            padding: '15px',
           }}
         >
           {companyData.map((data) => (

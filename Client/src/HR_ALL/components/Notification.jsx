@@ -11,8 +11,8 @@ import {
   Typography,
   Modal,
   CircularProgress,
-  Dialog,
-  DialogContent,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -29,14 +29,18 @@ const Notification = () => {
   const [openModal, setOpenModal] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false)
   const [confirmModalMsg, setConfirmModalMsg] = useState("")
+  const [confirmModalMsgSeverity, setConfirmModalMsgSeverity] = useState("")
+  const [VisitLoadModal, setVisitLoadModal] = useState(false)
 
+  // --------------------------------------------------------------------------------------------------
+  
   const fetchEventData = async () => {
     const HRName = account.name;
     const serverData = {
       role,
       HRName,
     };
-
+    
     try {
       const response = await axios.get(`${backendUrl}/HR/Events-Data`, {
         params: serverData,
@@ -51,23 +55,31 @@ const Notification = () => {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     fetchEventData();
   }, []);
 
+  // --------------------------------------------------------------------------------------------------
+  
   const handleVisitedClick = (event) => {
     setSelectedEvent(event);
     setOpenModal(true);
   };
 
+  // --------------------------------------------------------------------------------------------------
+  
   const handleModalClose = () => {
     setOpenModal(false);
     setSelectedEvent(null);
   };
 
+  // --------------------------------------------------------------------------------------------------
+  
   const handleConfirmVisit = async() => {
-
+    
+    setVisitLoadModal(true)
+    
     const HRName = account.name
     const eventName = selectedEvent.eventName
     const serverData = {
@@ -75,18 +87,21 @@ const Notification = () => {
       HRName,
       eventName
     }
-
+    
     try {
       const response = await axios.post(`${backendUrl}/HR/Set-Event-Visited`,serverData)
       if(response.status === 200){
+        setConfirmModalMsgSeverity("success")
         setConfirmModalOpen(true)
         setConfirmModalMsg(response.data.message)
       }
     } catch (error) {
+      setConfirmModalMsgSeverity("error")
       setConfirmModalOpen(true)
-      setConfirmModalMsg(error.response.data.message)
+      setConfirmModalMsg(error.response?.data?.message || "Error While Submitting")
     }finally {
       setOpenModal(false);
+      setVisitLoadModal(false)
       setSelectedEvent(null);
       setTimeout(() => {
         setConfirmModalOpen(false);
@@ -94,6 +109,8 @@ const Notification = () => {
     }
   };
 
+  // --------------------------------------------------------------------------------------------------
+  
   const filteredEvents = events.filter(event => {
     const eventDate = new Date(event.eventDate);
     const currentDate = new Date();
@@ -102,6 +119,8 @@ const Notification = () => {
     currentDate.setHours(0, 0, 0, 0);
     return eventDate >= currentDate;
   });
+  
+  // --------------------------------------------------------------------------------------------------
 
   return (
     <Layout>
@@ -118,9 +137,9 @@ const Notification = () => {
       >
 
         {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-          <CircularProgress color="primary" />
-        </Box>
+    <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+      <CircularProgress />
+    </Box>
         ) : filteredEvents.length > 0 ? (
           filteredEvents.map((event, index) => (
             <Card
@@ -201,7 +220,10 @@ const Notification = () => {
           </Typography>
         )}
 
-        {/*------- Modal ----------*/}
+        {/*--------------- Modal -----------------------*/}
+        {/*--------------- Modal -----------------------*/}
+        {/*--------------- Modal -----------------------*/}
+
         <Modal
           open={openModal}
           onClose={handleModalClose}
@@ -247,7 +269,11 @@ const Notification = () => {
               >
                 Cancel
               </Button>
-              <Button
+              {VisitLoadModal ? (
+              <CircularProgress/>
+              ): (
+                <>
+                <Button
                 variant="contained"
                 color="success"
                 onClick={handleConfirmVisit}
@@ -260,15 +286,26 @@ const Notification = () => {
               >
                 Confirm
               </Button>
+              </>
+              )}
             </Box>
           </Box>
         </Modal>
 
-        <Dialog open={confirmModalOpen} onClose={() => setConfirmModalOpen(false)}>
-          <DialogContent>
+        <Snackbar 
+        open={confirmModalOpen} 
+        onClose={() => setConfirmModalMsg(false)}
+        autoHideDuration={6000}>
+
+          <Alert
+          onClose={() => setConfirmModalMsg(false)}
+          severity={confirmModalMsgSeverity}
+          sx={{ width: '100%' }}>
+
             {confirmModalMsg}
-          </DialogContent>
-        </Dialog>
+
+          </Alert>
+        </Snackbar>
 
       </Box>
     </Layout>

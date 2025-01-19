@@ -116,7 +116,7 @@ const Company_NonTech = () => {
             display:"flex",
             justifyContent:"center",
             flexWrap:"wrap",
-            padding: '30px',
+            padding: '15px',
           }}
         >
           {companyNonData.map((data) => (

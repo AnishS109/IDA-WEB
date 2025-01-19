@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material"
+import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material"
 import AddAlertIcon from '@mui/icons-material/AddAlert';
 import React, { useContext, useEffect } from "react"
 import { NavLink } from "react-router-dom"
@@ -12,6 +12,7 @@ import SendIcon from "@mui/icons-material/Send";
 import EventIcon from '@mui/icons-material/Event';
 import PlaceIcon from '@mui/icons-material/Place';
 import ErrorIcon from '@mui/icons-material/Error';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const Event = () => {
 
@@ -28,6 +29,10 @@ const Event = () => {
   const [DataLoad, setDataLoad] = useState(false)
   const [fetchingError, setfetchingError] = useState("")
   const [SearchTerm,setSearchTerm] = useState("")
+  const [AddFeedBackLoad,setAddFeedBackLoad] = useState(false)
+  const [AddFeedBackSuccess,setAddFeedBackSuccess] = useState(false)
+  const [AddFeedBackSuccessMsg,setAddFeedBackSuccessMsg] = useState("")
+  const [AddFeedBackSuccessSeverity,setAddFeedBackSuccessSeverity] = useState("")
 
   // --------------------------------------------------------------------------------------------------
   
@@ -83,6 +88,9 @@ const Event = () => {
   // --------------------------------------------------------------------------------------------------
   
   const addFeedBackEvent = async() => {
+
+    setAddFeedBackLoad(true)
+
     const serverData = {
       HRName:account.name,
       feedBack:feedBack,
@@ -91,15 +99,19 @@ const Event = () => {
       eventPlaceName:ServerEventData.eventPlaceName
     }
 
-    console.log(serverData)
-
     try {
       const response = await axios.post(`${backendUrl}/HR/Set-Event-FeedBack`, serverData)
       if(response.status === 200){
-        console.log(response.data.message)
+        setAddFeedBackSuccessSeverity('success')
+        setAddFeedBackSuccessMsg( response?.data?.message ||"SuccessFully Submitted")
       }
     } catch (error) {
-      console.log(error.response.data.message)
+      setAddFeedBackSuccessSeverity("error")
+      setAddFeedBackSuccessMsg(error.response?.data?.message || "Error While Submitting")
+    } finally {
+      setAddFeedBackLoad(false)
+      setAddFeedBackModal(false)
+      setAddFeedBackSuccess(true)
     }
   }
 
@@ -332,7 +344,11 @@ const Event = () => {
         >
           Cancel
         </Button>
-        <Button
+        {AddFeedBackLoad ? (
+        <CircularProgress/>
+        ): (
+          <>
+          <Button
           variant="contained"
           endIcon={<SendIcon />}
           sx={{
@@ -348,8 +364,12 @@ const Event = () => {
         >
           Confirm
         </Button>
+          </>
+        )}
       </DialogActions>
     </Dialog>
+
+
 
     {/* --------------------------- MODAL FOR DETAIL FEEDBACK ----------------------------- */}
     {/* --------------------------- MODAL FOR DETAIL FEEDBACK ----------------------------- */}
@@ -410,8 +430,8 @@ const Event = () => {
             alignItems: 'center',
             gap: 1,
           }}
-        >
-          <EventIcon sx={{ color: '#888', marginRight: 1 }} />
+          >
+          <CalendarMonthIcon sx={{ color: '#888', marginRight: 1 }} />
           {new Date(DetailModalData.eventDate).toLocaleDateString()}
         </Typography>
 
@@ -423,7 +443,7 @@ const Event = () => {
             alignItems: 'center',
             gap: 1,
           }}
-        >
+          >
           <PlaceIcon sx={{ color: '#888', marginRight: 1 }} />
           {DetailModalData.eventPlaceName} ({DetailModalData.eventPlace})
         </Typography>
@@ -460,8 +480,8 @@ const Event = () => {
         ) : (
           <Typography
           variant="body1"
-            sx={{
-              color: '#888',
+          sx={{
+            color: '#888',
               display: 'flex',
               alignItems: 'center',
               gap: 1,
@@ -469,9 +489,9 @@ const Event = () => {
               fontSize: '1rem',
               fontWeight: 400,
             }}
-          >
+            >
             <ErrorIcon sx={{ color: '#f44336', marginRight: 1 }} />
-            No feedback provided
+            FeedBack is not added yet
           </Typography>
         )}
 
@@ -483,8 +503,8 @@ const Event = () => {
     <Button 
     variant="outlined" 
     sx={{
-        ':hover': {
-          variant: 'contained',
+      ':hover': {
+        variant: 'contained',
           backgroundColor: 'primary.main',
           color: 'white',
         },
@@ -496,6 +516,25 @@ const Event = () => {
     
 
     </Box>
+
+    {/* ----------------------- SNACKBAR FOR SUUCESS OR ERROR FEEDBACK ----------------------------- */}
+    {/* ----------------------- SNACKBAR FOR SUUCESS OR ERROR FEEDBACK ----------------------------- */}
+
+    <Snackbar
+    open={AddFeedBackSuccess}
+    onClose={() => setAddFeedBackSuccess(false)}
+    autoHideDuration={3000}>
+
+      <Alert
+      onClose={() => setAddFeedBackSuccess(false)}
+      severity={AddFeedBackSuccessSeverity}
+      sx={{width:"100%"}}>
+
+        {AddFeedBackSuccessMsg}
+
+      </Alert>
+
+    </Snackbar>
 
     </>
   )

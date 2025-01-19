@@ -7,7 +7,7 @@ export const DataContext = createContext({
 
 const DataProvider = ({ children }) => {
 
-  const backendUrl = "https://ida-web-backend.onrender.com"
+  const backendUrl = "http://localhost:5000"
 
   // -------------------------------------------------
   

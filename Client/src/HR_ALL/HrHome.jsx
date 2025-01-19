@@ -29,7 +29,7 @@ const HrHome = () => {
       sessionStorage.setItem("hasVisited", "true");
       setTimeout(() => {
         navigate("/Notification");
-      }, 1000);
+      }, 2000);
     } else {
       setOpenEvents(false);
     }

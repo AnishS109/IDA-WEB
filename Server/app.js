@@ -22,22 +22,22 @@ const startServer = () => {
 
   const PORT = process.env.BACKEND_PORT || 3000; // Ensure PORT is set correctly
   app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`http://localhost:${PORT}`);
   });
 
   ConnectionDB();
 };
 
 
-if (cluster.isMaster) {
+// if (cluster.isMaster) {
 
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+//   for (let i = 0; i < numCPUs; i++) {
+//     cluster.fork();
+//   }
 
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-  });
-} else {
+//   cluster.on('exit', (worker, code, signal) => {
+//     console.log(`Worker ${worker.process.pid} died`);
+//   });
+// } else {
   startServer();
-}
+// }

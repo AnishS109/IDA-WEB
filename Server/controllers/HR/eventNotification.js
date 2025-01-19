@@ -120,6 +120,6 @@ export const addFeedBackEvent = async(req, res) => {
     return res.status(200).json({message:"FeedBack Added Successfully"})
   } catch (error) {
     console.log("ERROR WHILE POSTING FEEDBACK DATA:", error)
-    return res.status(500).json({message:"ERROR WHILE POSTING FEEDBACK DATA:"})
+    return res.status(500).json({message:"Error While Submitting FeedBack Data"})
   }
 }
