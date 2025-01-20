@@ -22,7 +22,7 @@ import { HRDataContext } from "../../Context/HRDataProvider";
 
 const Notification = () => {
   const { backendUrl, role, account } = useContext(DataContext);
-  const { events, setEvents } = useContext(HRDataContext);
+  const { events, setEvents, setEventsLenght } = useContext(HRDataContext);
 
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -31,6 +31,7 @@ const Notification = () => {
   const [confirmModalMsg, setConfirmModalMsg] = useState("")
   const [confirmModalMsgSeverity, setConfirmModalMsgSeverity] = useState("")
   const [VisitLoadModal, setVisitLoadModal] = useState(false)
+  const [filteredEvents, setfilteredEvents] = useState([])
 
   // --------------------------------------------------------------------------------------------------
   
@@ -110,15 +111,23 @@ const Notification = () => {
   };
 
   // --------------------------------------------------------------------------------------------------
-  
-  const filteredEvents = events.filter(event => {
-    const eventDate = new Date(event.eventDate);
-    const currentDate = new Date();
+  useEffect(() => {
+    const filteredEvents = events.filter(event => {
+      const eventDate = new Date(event.eventDate);
+      const currentDate = new Date();
 
-    eventDate.setHours(0, 0, 0, 0);
-    currentDate.setHours(0, 0, 0, 0);
-    return eventDate >= currentDate;
-  });
+      // Normalize both dates to midnight for accurate comparison
+      eventDate.setHours(0, 0, 0, 0);
+      currentDate.setHours(0, 0, 0, 0);
+
+      // Return only future or today events
+      return eventDate >= currentDate;
+    });
+
+    // Update state with the number of filtered events
+    setEventsLenght(filteredEvents.length);
+    setfilteredEvents(filteredEvents)
+  }, [events]);
   
   // --------------------------------------------------------------------------------------------------
 

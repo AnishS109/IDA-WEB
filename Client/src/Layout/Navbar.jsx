@@ -14,7 +14,7 @@ const Navbar = () => {
     year: "numeric",
   });
 
-    const { events } = useContext(HRDataContext);
+    const { eventsLenght } = useContext(HRDataContext);
     const { PressChromeBackButton, setPressChromeBackButton } = useContext(DataContext);
 
   const navigate = useNavigate();
@@ -28,8 +28,6 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(null)
 
-  
-  
   // Open the modal
   const handleLogoutClick = () => {
     setOpen(true);
@@ -56,9 +54,9 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const notificationCounts = events ? events.length : 0
+    const notificationCounts = eventsLenght ? eventsLenght : 0
     setNotificationCount(notificationCounts)
-  },[events.length])
+  },[eventsLenght])
 
   return (
     <Box>

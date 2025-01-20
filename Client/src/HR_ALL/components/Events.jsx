@@ -414,6 +414,7 @@ const Event = () => {
             color: '#333',
             display: 'flex',
             alignItems: 'center',
+            mt:"10px"
           }}
         >
           <EventIcon sx={{ color: '#3a98f0', marginRight: 1 }} />
